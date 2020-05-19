@@ -10,8 +10,10 @@ public class SuperMushroom : Mushroom
         Type = PowerUpType.SUPER;
     }
 
-    protected override void Patrol()
+    void FixedUpdate()
     {
-        throw new System.NotImplementedException();
+        MoveUpward(1f);
+        Patrol();
     }
+
 }
