@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8666546090605437997}
   - component: {fileID: 8666546090605437998}
   - component: {fileID: 8666546090605437999}
-  - component: {fileID: 8666546090605437992}
+  - component: {fileID: 4599868493955483507}
   m_Layer: 8
   m_Name: big_mushroom
   m_TagString: Untagged
@@ -218,7 +218,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &8666546090605437992
+--- !u!114 &4599868493955483507
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -227,12 +227,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8666546090605437993}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28e2ba2882be8ae48ab23ce5bcb835f8, type: 3}
+  m_Script: {fileID: 11500000, guid: 8b4bcd5b40559a244b09d987644e9d30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   AppearanceClip: {fileID: 8300000, guid: 97a450c65284a4a3094ba5c2221a492b, type: 3}
-  moveDistance: 1
-  speed: 7
-  patrol: 1
-  appearMove: 1
-  gravity: 20
