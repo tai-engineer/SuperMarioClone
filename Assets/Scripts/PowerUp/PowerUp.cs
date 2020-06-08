@@ -17,10 +17,11 @@ public class PowerUp: MonoBehaviour
 
     #region Mushroom Variables
     // Audio
-    public AudioClip AppearanceClip;
+    public AudioClip appearSound;
 
     // Movement
-    public PowerUpMovement _movement;
+    public PowerUpMovement movement;
+    public bool moveable = false;
 
     Vector3 _startPos;
     #endregion
@@ -38,13 +39,16 @@ public class PowerUp: MonoBehaviour
         _rb.gravityScale = 0f;
         _startPos = _rb.position;
 
-        _audio.PlayOneShot(AppearanceClip);
-        StartCoroutine(_movement.MoveUpward(this));
+        _audio.PlayOneShot(appearSound);
+        StartCoroutine(movement.MoveUpward(this));
     }
 
     void FixedUpdate()
     {
-        _movement.Patrol(this);
+        if (moveable)
+        {
+            movement.Patrol(this);
+        }
     }
     // Move object in 2D space, use this in FixedUpdate
     void OnCollisionEnter2D(Collision2D collision)
@@ -57,7 +61,7 @@ public class PowerUp: MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Pipe"))
         {
-            _movement.direction *= -1.0f;
+            movement.direction *= -1.0f;
         }
     }
     public void Apply(GameObject obj)
