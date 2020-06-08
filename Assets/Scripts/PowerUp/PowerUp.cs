@@ -20,7 +20,7 @@ public class PowerUp: MonoBehaviour
     public AudioClip AppearanceClip;
 
     // Movement
-    public Movement _movement;
+    public PowerUpMovement _movement;
 
     Vector3 _startPos;
     #endregion
@@ -51,7 +51,7 @@ public class PowerUp: MonoBehaviour
     {
         Debug.Log("[Mushroom] Mushroom collided.");
         // Raise an event then get destroy by player
-        if (collision.gameObject.CompareTag("Mario"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             Destroy(gameObject);
         }
@@ -62,8 +62,8 @@ public class PowerUp: MonoBehaviour
     }
     public void Apply(GameObject obj)
     {
-        //var mario = obj.GetComponent<MarioController>();
-        //mario.BigTransform();
+        //var character = obj.GetComponent<CharacterController>();
+        //character.BigTransform();
         Destroy(gameObject);
     }
 }

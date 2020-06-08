@@ -3,23 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName ="New PowerUp Movement", menuName ="Movement/PowerUp")]
-public class PowerUpMovement : Movement
+public class PowerUpMovement : ScriptableObject
 {
+    [Range(0.0f, 100.0f)]
+    public float speed;
+
+    public float gravity;
+
+    [HideInInspector]
+    public Vector3 direction = Vector3.right;
+
     public float MoveUpDistance;
     bool _isMoveUp;
-    public override void Patrol(MonoBehaviour monoBehaviour)
+    public void Patrol(MonoBehaviour monoBehaviour)
     {
         if (_isMoveUp)
         {
             var rb2D = monoBehaviour.gameObject.GetComponent<Rigidbody2D>();
-
             Vector3 _moveVector = rb2D.position;
             _moveVector += direction * Time.fixedDeltaTime * speed;
             rb2D.MovePosition(_moveVector); 
         }
     }
 
-    public override IEnumerator MoveUpward(MonoBehaviour monoBehaviour)
+    public IEnumerator MoveUpward(MonoBehaviour monoBehaviour)
     {
         var rb2D = monoBehaviour.gameObject.GetComponent<Rigidbody2D>();
         Vector3 startPos = rb2D.position;

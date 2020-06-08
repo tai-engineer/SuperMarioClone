@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d5328e13ae0ac419df49a27cc6d753, type: 3}
   m_Name: DefaultPowerUpMovement
   m_EditorClassIdentifier: 
-  speed: 0.9
-  gravity: 4.82
-  direction: {x: 1, y: 0, z: 0}
+  speed: 5
+  gravity: 25
+  direction: {x: -1, y: -0, z: -0}
   MoveUpDistance: 1
