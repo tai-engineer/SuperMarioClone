@@ -20,7 +20,7 @@ public class PowerUp: MonoBehaviour
     public AudioClip appearSound;
 
     // Movement
-    public PowerUpMovement movement;
+    public PowerUpController movement;
     public bool moveable = false;
 
     Vector3 _startPos;
