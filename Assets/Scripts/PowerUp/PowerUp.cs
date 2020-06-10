@@ -10,14 +10,14 @@ public class PowerUp: MonoBehaviour
 {
     #region Components
     protected Rigidbody2D _rb;
-    protected AudioSource _audio;
+    protected AudioSource _audioPlayer;
     protected SpriteRenderer _sprite;
     protected CircleCollider2D _collider;
     #endregion
 
     #region Mushroom Variables
     // Audio
-    public AudioClip appearSound;
+    public AudioEvent appearSound;
 
     // Movement
     public PowerUpController movement;
@@ -27,10 +27,19 @@ public class PowerUp: MonoBehaviour
     #endregion
     void Awake()
     {
-        _rb = GetComponent<Rigidbody2D>();
-        _audio = GetComponent<AudioSource>();
+
+    }
+
+    /// <summary>
+    /// Auto-assinging components when we first add the components (done by
+    /// RequireComponent) to GameObject
+    /// </summary>
+    void Reset()
+    {
         _sprite = GetComponent<SpriteRenderer>();
         _collider = GetComponent<CircleCollider2D>();
+        _audioPlayer = GetComponent<AudioSource>();
+        _rb = GetComponent<Rigidbody2D>();
     }
 
     void Start()
@@ -39,7 +48,7 @@ public class PowerUp: MonoBehaviour
         _rb.gravityScale = 0f;
         _startPos = _rb.position;
 
-        _audio.PlayOneShot(appearSound);
+        appearSound.Play(_audioPlayer);
         StartCoroutine(movement.MoveUpward(this));
     }
 
