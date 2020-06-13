@@ -20,6 +20,7 @@ public class PowerUpController : ScriptableObject
         if (_isMoveUp)
         {
             var rb2D = monoBehaviour.gameObject.GetComponent<Rigidbody2D>();
+            rb2D.gravityScale = gravity;
             Vector3 _moveVector = rb2D.position;
             _moveVector += direction * Time.fixedDeltaTime * speed;
             rb2D.MovePosition(_moveVector); 
@@ -42,7 +43,6 @@ public class PowerUpController : ScriptableObject
 
         _isMoveUp = true;
         monoBehaviour.gameObject.GetComponent<CircleCollider2D>().enabled = true;
-        rb2D.gravityScale = gravity;
         yield return null;
     }
 
