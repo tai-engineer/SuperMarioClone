@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PowerUpType
+{
+    Default,
+    SuperMushroom,
+    FireFlower,
+    Star
+}
+
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(AudioSource))]
@@ -17,6 +25,8 @@ public class PowerUp: MonoBehaviour
     #endregion
 
     #region Mushroom Variables
+    // PowerUp type
+    public PowerUpType type = PowerUpType.Default;
     // Audio
     public AudioEvent appearSound;
 
@@ -24,10 +34,11 @@ public class PowerUp: MonoBehaviour
     public PowerUpController movement;
     public bool moveable = false;
     Vector3 _startPos;
-
     #endregion
     void Awake()
     {
+        Debug.Assert(type != PowerUpType.Default, "[PowerUp] Select type for PowerUp object.");
+
         _sprite = GetComponent<SpriteRenderer>();
         _collider = GetComponent<CircleCollider2D>();
         _audioPlayer = GetComponent<AudioSource>();
@@ -57,6 +68,7 @@ public class PowerUp: MonoBehaviour
         // Raise an event then get destroy by player
         if (collision.gameObject.CompareTag("Player"))
         {
+            Apply(collision, type);
             Destroy(gameObject);
         }
         else if (collision.gameObject.CompareTag("Pipe"))
@@ -64,10 +76,21 @@ public class PowerUp: MonoBehaviour
             movement.direction *= -1.0f;
         }
     }
-    public void Apply(GameObject obj)
+    void Apply(Collision2D collision, PowerUpType type)
     {
-        //var character = obj.GetComponent<CharacterController>();
-        //character.BigTransform();
+        var player = collision.gameObject.GetComponent<CharacterController>();
+        switch(type)
+        {
+            case PowerUpType.SuperMushroom:
+                //player.BigTransform();
+                break;
+            case PowerUpType.FireFlower:
+                //player.FireShooter();
+                break;
+            case PowerUpType.Star:
+                //player.Invicible();
+                break;
+        }
         Destroy(gameObject);
     }
 }

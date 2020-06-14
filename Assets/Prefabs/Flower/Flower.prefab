@@ -251,6 +251,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animation: {fileID: 4423393038215255459}
+  type: 2
   appearSound: {fileID: 11400000, guid: 20e3106884bdcc547baa3d4b22b2b943, type: 2}
   movement: {fileID: 11400000, guid: 880071fae76a5cf48b59818a71991a66, type: 2}
   moveable: 0
