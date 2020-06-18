@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8666546090605437999}
   - component: {fileID: 4599868493955483507}
   m_Layer: 8
-  m_Name: big_mushroom
+  m_Name: SuperMushroom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -230,4 +230,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b4bcd5b40559a244b09d987644e9d30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AppearanceClip: {fileID: 8300000, guid: 97a450c65284a4a3094ba5c2221a492b, type: 3}
+  _animation: {fileID: 0}
+  type: 1
+  appearSound: {fileID: 11400000, guid: 20e3106884bdcc547baa3d4b22b2b943, type: 2}
+  movement: {fileID: 11400000, guid: 880071fae76a5cf48b59818a71991a66, type: 2}
+  moveable: 1
