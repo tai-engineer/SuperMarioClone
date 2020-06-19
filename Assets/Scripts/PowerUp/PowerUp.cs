@@ -7,7 +7,7 @@ public enum PowerUpType
     Default,
     SuperMushroom,
     FireFlower,
-    Star
+    StarMan
 }
 
 [RequireComponent(typeof(SpriteRenderer))]
@@ -32,7 +32,9 @@ public class PowerUp: MonoBehaviour
 
     // Movement
     public PowerUpController movement;
-    public bool moveable = false;
+    public bool IsMoveable = false;
+    public bool IsBounceable = false;
+
     Vector3 _startPos;
     #endregion
     void Awake()
@@ -57,9 +59,13 @@ public class PowerUp: MonoBehaviour
 
     void FixedUpdate()
     {
-        if (moveable)
+        if (IsMoveable)
         {
             movement.Patrol(this);
+        }
+        else if(IsBounceable)
+        {
+            movement.Bounce(this);
         }
     }
     // Move object in 2D space, use this in FixedUpdate
@@ -87,7 +93,7 @@ public class PowerUp: MonoBehaviour
             case PowerUpType.FireFlower:
                 //player.FireShooter();
                 break;
-            case PowerUpType.Star:
+            case PowerUpType.StarMan:
                 //player.Invicible();
                 break;
         }
