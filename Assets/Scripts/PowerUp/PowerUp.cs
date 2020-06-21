@@ -7,7 +7,8 @@ public enum PowerUpType
     Default,
     SuperMushroom,
     FireFlower,
-    StarMan
+    StarMan,
+    OneUp
 }
 
 [RequireComponent(typeof(SpriteRenderer))]
@@ -95,6 +96,9 @@ public class PowerUp: MonoBehaviour
                 break;
             case PowerUpType.StarMan:
                 //player.Invicible();
+                break;
+            case PowerUpType.OneUp:
+                //player.GainLife();
                 break;
         }
         Destroy(gameObject);
