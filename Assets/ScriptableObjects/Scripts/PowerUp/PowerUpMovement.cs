@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName ="New PowerUp Movement", menuName ="Movement/PowerUp")]
-public class PowerUpController : ScriptableObject
+[CreateAssetMenu(fileName ="New Movement", menuName ="Movement/PowerUp")]
+public class PowerUpMovement : ScriptableObject
 {
     [Range(0.0f, 100.0f)]
     public float speed;

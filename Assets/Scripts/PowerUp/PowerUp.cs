@@ -31,7 +31,7 @@ public class PowerUp: MonoBehaviour
     public AudioEvent appearSound;
 
     // Movement
-    public PowerUpController movement;
+    public PowerUpMovement movement;
     public bool IsMoveable = false;
     public bool IsBounceable = false;
 
