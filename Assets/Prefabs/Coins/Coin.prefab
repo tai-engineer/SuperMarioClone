@@ -233,6 +233,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f92c9c51d46fcd140a0abbc98933a41e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounceDistance: 2
+  bounceForce: 10
   gravity: 4
   coinSound: {fileID: 11400000, guid: 0f5025e6b67095141adfc9c7332b5d72, type: 2}

@@ -4,7 +4,7 @@
 [RequireComponent(typeof(AudioSource))]
 public class Coin : MonoBehaviour
 {
-    public float bounceDistance;
+    public float bounceForce;
     public float gravity;
     public AudioEvent coinSound;
 
@@ -19,6 +19,6 @@ public class Coin : MonoBehaviour
     {
         coinSound.Play(_audioPlayer);
         _rb.gravityScale = gravity;
-        _rb.AddForce(new Vector2(0f, _rb.position.y + bounceDistance), ForceMode2D.Impulse);
+        _rb.AddForce(new Vector2(0f, _rb.position.y + bounceForce), ForceMode2D.Impulse);
     }
 }
