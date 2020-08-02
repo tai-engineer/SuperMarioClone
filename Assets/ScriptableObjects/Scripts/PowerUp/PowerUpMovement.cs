@@ -6,7 +6,10 @@ using UnityEngine;
 public class PowerUpMovement : ScriptableObject
 {
     [Range(0.0f, 100.0f)]
-    public float speed;
+    public float patrolSpeed;
+
+    [Range(0.0f, 100.0f)]
+    public float moveUpSpeed;
 
     public float gravity;
 
@@ -26,7 +29,7 @@ public class PowerUpMovement : ScriptableObject
             var rb = monoBehaviour.gameObject.GetComponent<Rigidbody2D>();
             rb.gravityScale = gravity;
             Vector3 _moveVector = rb.position;
-            _moveVector += direction * Time.fixedDeltaTime * speed;
+            _moveVector += direction * Time.fixedDeltaTime * patrolSpeed;
             rb.MovePosition(_moveVector);
         }
     }
@@ -40,7 +43,7 @@ public class PowerUpMovement : ScriptableObject
 
         while(Vector3.Distance(rb.position, endPos) > 0.001f)
         {
-            Vector3 des = Vector3.MoveTowards(rb.position, endPos, Time.deltaTime * speed);
+            Vector3 des = Vector3.MoveTowards(rb.position, endPos, Time.deltaTime * moveUpSpeed);
             rb.MovePosition(des);
             yield return null;
         }

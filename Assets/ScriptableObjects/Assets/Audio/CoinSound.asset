@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2b39ea1919586e4194b9691d05c9f72, type: 3}
   m_Name: CoinSound
   m_EditorClassIdentifier: 
-  clips: []
+  clips:
+  - {fileID: 8300000, guid: d885ffc842af744d89f7d595ffcc176a, type: 3}
   volume:
-    minValue: 0
-    maxValue: 0
+    minValue: 1
+    maxValue: 1
   pitch:
-    minValue: 0
-    maxValue: 0
+    minValue: 1
+    maxValue: 1

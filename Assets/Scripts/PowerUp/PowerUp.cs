@@ -36,7 +36,6 @@ public class PowerUp: MonoBehaviour
     public bool IsMoveable = false;
     public bool IsBounceable = false;
 
-    Vector3 _startPos;
     #endregion
     void Awake()
     {
@@ -52,7 +51,6 @@ public class PowerUp: MonoBehaviour
     {
         _collider.enabled = false;
         _rb.gravityScale = 0f;
-        _startPos = _rb.position;
 
         appearSound.Play(_audioPlayer);
         StartCoroutine(movement.MoveUpward(this));
