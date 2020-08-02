@@ -42,8 +42,10 @@ public class BlockBehaviourEditor : Editor
                 break;
         }
         block.deactivateSprite = (Sprite)EditorGUILayout.ObjectField("Deactivate Sprite", block.deactivateSprite, typeof(Sprite), false);
-        // Test
-        EditorGUILayout.LabelField("Test", EditorStyles.boldLabel);
-        block.characterType = (BlockBehaviour.CharacterType)EditorGUILayout.EnumPopup("Character Type", block.characterType);
+
+        if(GUI.changed)
+        {
+            EditorUtility.SetDirty(target);
+        }
     }
 }
