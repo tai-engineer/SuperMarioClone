@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d5328e13ae0ac419df49a27cc6d753, type: 3}
   m_Name: DefaultMovement
   m_EditorClassIdentifier: 
-  speed: 5
+  patrolSpeed: 5
+  moveUpSpeed: 3
   gravity: 25
   direction: {x: -1, y: -0, z: -0}
-  MoveUpDistance: 1
+  MoveUpDistance: 0.5
   JumpForce: 0
   GroundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256

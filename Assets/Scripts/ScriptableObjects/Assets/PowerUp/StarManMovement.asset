@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d5328e13ae0ac419df49a27cc6d753, type: 3}
   m_Name: StarManMovement
   m_EditorClassIdentifier: 
-  speed: 5
+  patrolSpeed: 5
+  moveUpSpeed: 3
   gravity: 5
   direction: {x: -1, y: -0, z: -0}
-  MoveUpDistance: 1
+  MoveUpDistance: 0.5
   JumpForce: 25
   GroundLayer:
     serializedVersion: 2
