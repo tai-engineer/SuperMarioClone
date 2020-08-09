@@ -56,11 +56,14 @@ public class BlockBehaviour : MonoBehaviour
     Vector3 _bounceVector;
     Vector3 _startPostion;
     bool _bounceStart = false;
+    bool _bounceEnd = false;
     bool _bounceUp = true;
+    public bool IsBounceEnd { get { return _bounceEnd; } }
     #endregion
 
     #region Deactivate
     public Sprite deactivateSprite;
+    public bool IsDeactivated { get { return _isDeactivated; } }
     bool _isDeactivated = false;
     #endregion
 
@@ -167,8 +170,8 @@ public class BlockBehaviour : MonoBehaviour
             _bounceUp = false;
         }
 
-        bool bounceEnd = (_bounceUp == false) && Mathf.Approximately(_rb.position.y, _startPostion.y);
-        if (bounceEnd)
+        _bounceEnd = (_bounceUp == false) && Mathf.Approximately(_rb.position.y, _startPostion.y);
+        if (_bounceEnd)
         {
             _bounceStart = false;
             ResetBounceVector();
@@ -214,6 +217,7 @@ public class BlockBehaviour : MonoBehaviour
         {
             return;
         }
+
         _render.sprite = deactivateSprite;
         _isDeactivated = true;
     }
