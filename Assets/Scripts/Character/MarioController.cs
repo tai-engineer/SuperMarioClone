@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
-public class MarioController : Mario
+[RequireComponent(typeof(Mario))]
+[RequireComponent(typeof(MarioInput))]
+public class MarioController : MonoBehaviour
 {
     #region Type
     public MarioType Type
@@ -17,9 +17,9 @@ public class MarioController : Mario
     MarioType _type;
     #endregion
 
-    #region Components
-    Rigidbody2D _rb;
-    BoxCollider2D _box;
+    #region References
+    Mario _mario;
+    MarioInput _marioInput;
     #endregion
 
     #region Animation
@@ -27,93 +27,84 @@ public class MarioController : Mario
     #endregion
 
     #region Movement
-    Vector3 _moveVector = Vector3.zero;
-    Vector3 _currentPosition;
-    public float moveSpeed;
-
-    bool _isJumping = false;
-    bool _isGrounded = false;
+    Vector2 _moveVector = Vector2.zero;
+    
+    #region Jump
+    public float jumpSpeed = 20f;
+    public float jumpAbortSpeedReduction = 100f;
+    public float gravity = 50f;
     #endregion
 
-    public LayerMask layerToCast;
-    string COMPONENT_NAME = "[MarioController] ";
+    #region Run
+    public float runSpeed = 10f;
+    public float groundAcceleration = 100f;
+    public float groundDeceleration = 100f;
+    #endregion
+    #endregion
+
     void Awake()
     {
-        _rb = GetComponent<Rigidbody2D>();
-        _box = GetComponent<BoxCollider2D>();
+        _mario = GetComponent<Mario>();
+        _marioInput = GetComponent<MarioInput>();
     }
 
     void Update()
     {
+        if(_marioInput.Jump.Down)
+        {
+            _moveVector.y = jumpSpeed;
+        }
 
     }
     void FixedUpdate()
     {
-        GroundCheck();
-        HandleWalkMovement();
-        HandleOnAirMovement();
-        Move();
+        HandleVerticalMovement();
+        HandleHorizontalMovement();
+
+        _mario.Move(_moveVector);
     }
 
-    void GroundCheck()
+    void HandleVerticalMovement()
     {
-        Vector2 collidercenter = _box.bounds.center;
-        Vector2 colliderSize = _box.size;
+        /* Simulate jump action
+         * Slowly decrease up vector toward max height
+         */
+        if (_moveVector.y > 0)
+        {
+            _moveVector.y -= jumpAbortSpeedReduction * Time.fixedDeltaTime;
+        }
 
-        Vector2 boxCenter = new Vector2(collidercenter.x, collidercenter.y - (colliderSize.y / 2));
-        Vector2 boxSize = new Vector2(colliderSize.x, colliderSize.y * 0.9f);
+        // Reset up vector when hit upper obstacle
+        if(Mathf.Approximately(_moveVector.y, 0f) || _mario.IsCeiling && _moveVector.y > 0f)
+        {
+            _moveVector.y = 0f;
+        }
 
-        _box.enabled = false;
-        _isGrounded = Physics2D.OverlapBox(boxCenter, boxSize, 0, layerToCast.value) != null;
+        // Mario is still affected by gravity when grounded
+        _moveVector.y -= gravity * Time.fixedDeltaTime;
+
+        if (_moveVector.y < -gravity * Time.fixedDeltaTime && _mario.IsGrounded)
+        {
+            _moveVector.y = -gravity * Time.fixedDeltaTime;
+        }
+    }
+    void HandleHorizontalMovement()
+    {
+        float desiredSpeed = _marioInput.Horizontal.Value * runSpeed;
+        _moveVector.x = Mathf.MoveTowards(_moveVector.x, desiredSpeed, groundAcceleration * Time.fixedDeltaTime);
+    }
+    public void BigTransform()
+    {
         
-        //Debug.Log(COMPONENT_NAME + "Grounded: " + _isGrounded);
-        _box.enabled = true;
-    }
-    void HandleWalkMovement()
-    {
-        if (!InputController.Instance.IsGettingInput)
-            return;
-
-        _moveVector.x = InputController.Instance.InputVector.x * moveSpeed;
     }
 
-    void HandleOnAirMovement()
+    public void FireShooter()
     {
-        if (!InputController.Instance.IsGettingInput)
-            return;
-
-        if (!_isGrounded)
-            return;
-
-        _moveVector.y = InputController.Instance.InputVector.y > 0 ? 1f : 0f;
-        _moveVector.y = _moveVector.y * moveSpeed;
-        _isJumping = true;
-    }
-    void Move()
-    {
-        if (!InputController.Instance.IsGettingInput)
-            return;
-
-        _currentPosition = _rb.position;
-        Vector3 movePosition = _currentPosition + _moveVector * Time.fixedDeltaTime; ;
-        //Debug.Log(COMPONENT_NAME + "MoveVector: " + _moveVector);
-        _rb.MovePosition(movePosition);
-
-        // Reset move vector
-        _moveVector = Vector3.zero;
-    }
-    protected override void BigTransform()
-    {
-        throw new System.NotImplementedException();
+        
     }
 
-    protected override void FireShooter()
+    public void Invincible()
     {
-        throw new System.NotImplementedException();
-    }
-
-    protected override void Invincible()
-    {
-        throw new System.NotImplementedException();
+        
     }
 }

@@ -1,45 +1,61 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public enum MoveDirection
-{
-    LEFT = -1,
-    RIGHT = 1
-}
-public class InputController : Singleton<InputController>
 
+public class InputController: MonoBehaviour
 {
-    Vector3 _inputVector = Vector3.zero;
-    MoveDirection _dir = MoveDirection.RIGHT;
-    MoveDirection _prevDir = MoveDirection.RIGHT;
-    bool _dirChanged = false;
-    public bool IsDirChanged { get; private set; }
-    public bool IsGettingInput { get; private set; }
-    public Vector3 InputVector { get { return _inputVector; } }
-    // Start is called before the first frame update
-    void Start()
+    [Serializable]
+    public class InputButton
     {
-        
+        public bool Down { get; protected set; }
+        public KeyCode _key;
+
+        public InputButton(KeyCode key)
+        {
+            _key = key;
+        }
+
+        public void GetInput()
+        {
+            Down = Input.GetKeyDown(_key);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    [Serializable]
+    public class InputAxis
     {
-        _inputVector.x = Input.GetAxisRaw("Horizontal");
-        _inputVector.y = Input.GetAxisRaw("Vertical");
-        //Debug.Log("[InputController] _inputVector.x: " + _inputVector.x);
-        //Debug.Log("[InputController] _inputVector.y: " + _inputVector.y);
+        public float Value { get; protected set; }
+        public KeyCode _negative;
+        public KeyCode _positive;
 
-        _dir = _inputVector.x > 0 ? MoveDirection.RIGHT : MoveDirection.LEFT;
-        IsDirChanged = (_dir != _prevDir);
-        _prevDir = _dir;
+        public InputAxis(KeyCode negative, KeyCode positive)
+        {
+            _negative = negative;
+            _positive = positive;
+        }
 
-        IsGettingInput = (_inputVector.x != 0f || _inputVector.y != 0f) ? true: false;
-    }
+        public void GetInput()
+        {
+            bool negativeHeld = false;
+            bool positiveHeld = false;
 
-    public MoveDirection GetDirection()
-    {
-        return _dir;
+            negativeHeld = Input.GetKey(_negative);
+            positiveHeld = Input.GetKey(_positive);
+
+            if(negativeHeld == positiveHeld)
+            {
+                Value = 0f;
+            }
+            else if(negativeHeld)
+            {
+                Value = -1.0f;
+            }
+            else
+            {
+                Value = 1.0f;
+            }
+        }
     }
 }
