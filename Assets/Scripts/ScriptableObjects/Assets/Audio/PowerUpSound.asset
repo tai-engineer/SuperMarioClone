@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2b39ea1919586e4194b9691d05c9f72, type: 3}
-  m_Name: AppearSound
+  m_Name: PowerUpSound
   m_EditorClassIdentifier: 
   clips:
-  - {fileID: 8300000, guid: 97a450c65284a4a3094ba5c2221a492b, type: 3}
+  - {fileID: 8300000, guid: 26301d2e86e99420599e315297a825df, type: 3}
   volume:
-    minValue: 0.63063073
-    maxValue: 0.63063073
+    minValue: 1
+    maxValue: 1
   pitch:
-    minValue: 0.83171237
-    maxValue: 1.0005138
+    minValue: 0.9277964
+    maxValue: 1.0123458

@@ -27,6 +27,7 @@ public class InputController: MonoBehaviour
     public class InputAxis
     {
         public float Value { get; protected set; }
+        public bool Down { get; protected set; }
         public KeyCode _negative;
         public KeyCode _positive;
 
@@ -56,6 +57,8 @@ public class InputController: MonoBehaviour
             {
                 Value = 1.0f;
             }
+
+            Down = negativeHeld != positiveHeld;
         }
     }
 }
