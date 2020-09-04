@@ -40,6 +40,17 @@ public class PlayerController : MonoBehaviour
     public float groundAcceleration = 100f;
     public float groundDeceleration = 100f;
     #endregion
+
+    #region Dash
+    public float dashTime;
+    public float dashSpeed;
+    public float distanceBetweenImages;
+    public float dashCooldown;
+    public float dashAcceleration;
+    float dashTimeLeft;
+    float lastDash;
+    float lastImageXPos;
+    #endregion
     #endregion
 
     #region State Variables
@@ -57,7 +68,7 @@ public class PlayerController : MonoBehaviour
     public int boolRunParameter = Animator.StringToHash("IsRunning");
     [HideInInspector]
     public int triggerBigTransformParameter = Animator.StringToHash("IsBigTransform");
-
+    #endregion
     #region Getter/Setter
     public PlayerType Type { get { return _type; } }
     public PlayerInput Input { get { return _playerInput; } }
@@ -65,7 +76,7 @@ public class PlayerController : MonoBehaviour
     public bool IsGrounded { get { return _player.IsGrounded; } }
     public bool IsCeiling { get { return _player.IsCeiling; } }
     public bool IsBigTransform { get {return _animator.GetBool(triggerBigTransformParameter); }  }
-    #endregion
+    public bool IsDashing { get; private set; }
     #endregion
     #region Audio
     public AudioEvent powerUpSound;
@@ -136,6 +147,38 @@ public class PlayerController : MonoBehaviour
         {
             _moveVector.y = -gravity * Time.fixedDeltaTime;
         }
+    }
+    public void DashMovement()
+    {
+        if(IsDashing)
+        {
+            if (dashTimeLeft > 0)
+            {
+                dashTimeLeft -= Time.fixedDeltaTime;
+                float desiredSpeed = _playerInput.Horizontal.Value * dashSpeed;
+                _moveVector.x = Mathf.MoveTowards(_moveVector.x, desiredSpeed, dashAcceleration * Time.fixedDeltaTime);
+
+                if (Mathf.Abs(_player.rigidBody.position.x - lastImageXPos) > distanceBetweenImages)
+                {
+                    PlayerAfterImagePool.Instance.GetFromPool();
+                    lastImageXPos = _player.rigidBody.position.x;
+                } 
+            }
+            else
+            {
+                IsDashing = false;
+            }
+        }
+    }
+
+    public void StartDash()
+    {
+        IsDashing = true;
+        dashTimeLeft = dashTime;
+        lastDash = Time.time;
+
+        PlayerAfterImagePool.Instance.GetFromPool();
+        lastImageXPos = _player.rigidBody.position.x;
     }
     public void SetJumpSpeed(float speed)
     {

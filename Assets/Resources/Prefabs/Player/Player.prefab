@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 378173617590575807}
   - component: {fileID: 1642457770}
   m_Layer: 8
-  m_Name: Mario
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -198,7 +198,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.4920993}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -209,7 +209,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 1.4241986}
   m_EdgeRadius: 0
 --- !u!50 &378173617590575805
 Rigidbody2D:
@@ -271,6 +271,11 @@ MonoBehaviour:
   runSpeed: 10
   groundAcceleration: 100
   groundDeceleration: 100
+  dashTime: 0.2
+  dashSpeed: 20
+  distanceBetweenImages: 0.1
+  dashCooldown: 2
+  dashAcceleration: 125
   boolJumpParameter: 1749078233
   boolRunParameter: -887662580
   triggerBigTransformParameter: -287643577
@@ -288,7 +293,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boxCollider: {fileID: 0}
-  rb: {fileID: 0}
+  rigidBody: {fileID: 0}
 --- !u!114 &378173617590575807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,6 +308,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Jump:
     _key: 32
+  Dash:
+    _key: 304
   Horizontal:
     _negative: 97
     _positive: 100

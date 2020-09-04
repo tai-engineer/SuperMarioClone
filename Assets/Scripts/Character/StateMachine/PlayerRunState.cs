@@ -19,6 +19,7 @@ public class PlayerRunState : PlayerState
     {
         player.GroundVericalMovement();
         player.GroundHorizontalMovement();
+        player.DashMovement();
     }
 
     public override void Update(PlayerStateController state, PlayerController player)
@@ -37,5 +38,9 @@ public class PlayerRunState : PlayerState
             state.ChangeState(player.idleState);
         }
 
+        if (player.Input.Dash.Down)
+        {
+            player.StartDash();
+        }
     }
 }

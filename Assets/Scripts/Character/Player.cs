@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     [HideInInspector]
     public BoxCollider2D boxCollider;
 
-    Rigidbody2D _rb;
+    public Rigidbody2D rigidBody;
     Vector2 _nextMovement = Vector2.zero;
 
     #region Getter/Setter
@@ -25,11 +25,11 @@ public class Player : MonoBehaviour
     void Awake()
     {
         boxCollider = GetComponent<BoxCollider2D>();
-        _rb = GetComponent<Rigidbody2D>();
+        rigidBody = GetComponent<Rigidbody2D>();
     }
     void FixedUpdate()
     {
-        _rb.MovePosition(_rb.position + _nextMovement * Time.fixedDeltaTime);
+        rigidBody.MovePosition(rigidBody.position + _nextMovement * Time.fixedDeltaTime);
         _nextMovement = Vector2.zero;
 
         CheckCollision();

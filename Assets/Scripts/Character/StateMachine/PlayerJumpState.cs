@@ -20,6 +20,7 @@ public class PlayerJumpState : PlayerState
     {
         player.AirborneVerticalMovement();
         player.AirborneHorizontalMovement();
+        player.DashMovement();
     }
 
     public override void Update(PlayerStateController state, PlayerController player)
@@ -27,6 +28,11 @@ public class PlayerJumpState : PlayerState
         if(player.IsGrounded && player.MoveVector.y < 0)
         {
             state.ChangeState(player.idleState);
+        }
+
+        if (player.Input.Dash.Down && !Mathf.Approximately(player.MoveVector.x, 0f))
+        {
+            player.StartDash();
         }
     }
 }
