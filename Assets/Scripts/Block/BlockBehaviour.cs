@@ -98,7 +98,7 @@ public class BlockBehaviour : MonoBehaviour
 
         if (_startSpawnObj && _isHitByPlayer && !_isColliding)
         {
-            SpawnObject(_hitObject.GetComponent<MarioController>().Type);
+            SpawnObject(_hitObject.GetComponent<PlayerController>().Type);
         }
     }
     void FixedUpdate()
@@ -125,7 +125,7 @@ public class BlockBehaviour : MonoBehaviour
          *|  Big | Shatter | Bounce/Spawn | Bounce/Spawn |
          */
         if (!_isDeactivated &&
-            _hitObject.GetComponent<MarioController>().Type == MarioType.Big &&
+            _hitObject.GetComponent<PlayerController>().Type == PlayerType.Big &&
             spawnType == SpawnObjectType.None)
         {
             _startShatter = true;
@@ -237,7 +237,7 @@ public class BlockBehaviour : MonoBehaviour
             numberOfCoins--;
         }
     }
-    void SpawnPowerUp(MarioType type)
+    void SpawnPowerUp(PlayerType type)
     {
         GameObject obj = null;
         switch (spawnType)
@@ -249,15 +249,15 @@ public class BlockBehaviour : MonoBehaviour
                 obj = OneUpMushroom;
                 break;
             case SpawnObjectType.Starman:
-                obj = (type == MarioType.Small) ? SuperMushroom : Starman;
+                obj = (type == PlayerType.Small) ? SuperMushroom : Starman;
                 break;
             case SpawnObjectType.FireFlower:
-                obj = (type == MarioType.Small) ? SuperMushroom : FireFlower;
+                obj = (type == PlayerType.Small) ? SuperMushroom : FireFlower;
                 break;
         }
         Instantiate(obj, _startPostion + _spawnOffSet, Quaternion.identity);
     }
-    void SpawnObject(MarioType type)
+    void SpawnObject(PlayerType type)
     {
         if(_isDeactivated)
         {
