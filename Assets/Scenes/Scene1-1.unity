@@ -7991,7 +7991,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4541c598aa3cad142bff7d640d7a7cb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _afterImagePrefab: {fileID: 3695163677332954348, guid: 3d3ba065cd978f144b7986cbd1c8b037,
+  afterImagePrefab: {fileID: 3695163677332954348, guid: 3d3ba065cd978f144b7986cbd1c8b037,
     type: 3}
   objectPoolElements: 10
 --- !u!4 &2115800850

@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
 
     [HideInInspector]
     public BoxCollider2D boxCollider;
-
+    [HideInInspector]
     public Rigidbody2D rigidBody;
     Vector2 _nextMovement = Vector2.zero;
 

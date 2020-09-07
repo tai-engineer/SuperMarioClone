@@ -59,6 +59,8 @@ public class PlayerController : MonoBehaviour
     public PlayerIdleState idleState = new PlayerIdleState();
     public PlayerJumpState jumpState = new PlayerJumpState();
     public PlayerRunState runState = new PlayerRunState();
+    public PlayerDashState dashState = new PlayerDashState();
+
     #endregion
 
     #region Animation
@@ -68,18 +70,25 @@ public class PlayerController : MonoBehaviour
     public int boolRunParameter = Animator.StringToHash("IsRunning");
     [HideInInspector]
     public int triggerBigTransformParameter = Animator.StringToHash("IsBigTransform");
+    [HideInInspector]
+    public int boolDashParameter = Animator.StringToHash("IsDashing");
+    #endregion
+    #region Audio
+    public AudioEvent powerUpSound;
+    #endregion
+    #region Effects
+    public ParticleSystem dashEffect;
+    public float dashMaxVelocity;
     #endregion
     #region Getter/Setter
     public PlayerType Type { get { return _type; } }
     public PlayerInput Input { get { return _playerInput; } }
     public Vector2 MoveVector { get { return _moveVector; } }
+    public int FaceDirection { get; set; }
     public bool IsGrounded { get { return _player.IsGrounded; } }
     public bool IsCeiling { get { return _player.IsCeiling; } }
     public bool IsBigTransform { get {return _animator.GetBool(triggerBigTransformParameter); }  }
     public bool IsDashing { get; private set; }
-    #endregion
-    #region Audio
-    public AudioEvent powerUpSound;
     #endregion
     void Awake()
     {
@@ -109,7 +118,6 @@ public class PlayerController : MonoBehaviour
 
         _player.Move(_moveVector);
     }
-
     public void AirborneVerticalMovement()
     {
         // Simulate jump action, Slowly decrease up vector toward max height
@@ -126,7 +134,6 @@ public class PlayerController : MonoBehaviour
 
         _moveVector.y -= gravity * Time.fixedDeltaTime;
     }
-
     public void AirborneHorizontalMovement()
     {
         float accelerate = _playerInput.Horizontal.Down ? airAcceleration : airDeceleration;
@@ -164,13 +171,12 @@ public class PlayerController : MonoBehaviour
                     lastImageXPos = _player.rigidBody.position.x;
                 } 
             }
-            else
+            else if(dashTimeLeft <= 0 || !_player.IsGrounded)
             {
                 IsDashing = false;
             }
         }
     }
-
     public void StartDash()
     {
         IsDashing = true;
@@ -179,6 +185,16 @@ public class PlayerController : MonoBehaviour
 
         PlayerAfterImagePool.Instance.GetFromPool();
         lastImageXPos = _player.rigidBody.position.x;
+    }
+    public void CreateDashEffect()
+    {
+        float flipX = _render.flipX ? 1.0f : 0f;
+        dashEffect.GetComponent<ParticleSystemRenderer>().flip = new Vector3(flipX, 0f, 0f);
+
+        var velocityOverTime = dashEffect.velocityOverLifetime;
+        velocityOverTime.xMultiplier = FaceDirection > 0 ? -dashMaxVelocity: dashMaxVelocity;
+
+        dashEffect.Play();
     }
     public void SetJumpSpeed(float speed)
     {
@@ -197,10 +213,12 @@ public class PlayerController : MonoBehaviour
         if (_moveVector.x > 0)
         {
             _render.flipX = false;
+            FaceDirection = 1;
         }
         else if(_moveVector.x < 0)
         {
             _render.flipX = true;
+            FaceDirection = -1;
         }
     }
     public void BigTransform()
@@ -212,12 +230,10 @@ public class PlayerController : MonoBehaviour
         _player.boxCollider.size = spriteSize;
         _player.boxCollider.offset = new Vector2(0f, 1f);
     }
-
     public void FireShooter()
     {
         return;
     }
-
     public void Invincible()
     {
         return;

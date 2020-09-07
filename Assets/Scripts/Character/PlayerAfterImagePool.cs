@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class PlayerAfterImagePool : Singleton<PlayerAfterImagePool>
 {
-    [SerializeField]
-    GameObject _afterImagePrefab;
+     public GameObject afterImagePrefab;
 
     Queue<GameObject> availableObjects = new Queue<GameObject>();
     public int objectPoolElements = 10;
@@ -18,7 +17,7 @@ public class PlayerAfterImagePool : Singleton<PlayerAfterImagePool>
     {
         for (int i = 0; i < objectPoolElements; i++)
         {
-            GameObject instanceToAdd = Instantiate(_afterImagePrefab, transform);
+            GameObject instanceToAdd = Instantiate(afterImagePrefab, transform);
             AddPool(instanceToAdd);
         }
     }

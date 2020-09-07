@@ -2,29 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerJumpState : PlayerState
+public class PlayerDashState : PlayerState
 {
     public override void EnterState(PlayerStateController state, PlayerController player)
     {
-        Debug.Log("State: Jump");
-        player.SetJumpSpeed(player.jumpSpeed);
-        player.SetParameter(player.boolJumpParameter, true);
+        Debug.Log("State: Dash");
+        player.StartDash();
+        player.CreateDashEffect();
+        player.SetParameter(player.boolDashParameter, true);
     }
 
     public override void ExitState(PlayerStateController state, PlayerController player)
     {
-        player.SetParameter(player.boolJumpParameter, false);
+        player.SetParameter(player.boolDashParameter, false);
     }
 
     public override void FixedUpdate(PlayerStateController state, PlayerController player)
     {
-        player.AirborneVerticalMovement();
-        player.AirborneHorizontalMovement();
+        player.GroundVericalMovement();
+        player.GroundHorizontalMovement();
+        player.DashMovement();
     }
 
     public override void Update(PlayerStateController state, PlayerController player)
     {
-        if(player.IsGrounded && player.MoveVector.y < 0)
+        if(player.Input.Jump.Down)
+        {
+            state.ChangeState(player.jumpState);
+        }
+        else if (!player.IsDashing)
         {
             state.ChangeState(player.idleState);
         }
