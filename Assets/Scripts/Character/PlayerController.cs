@@ -118,8 +118,6 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         _playerState.Update();
-        CheckCeiling();
-        CheckGround();
     }
 
     void FixedUpdate()
@@ -170,7 +168,7 @@ public class PlayerController : MonoBehaviour
             _moveVector.y = -gravity * Time.fixedDeltaTime;
         }
     }
-    public void DashMovement()
+    public void HorizontalDashMovement()
     {
         if(IsDashing)
         {
@@ -236,7 +234,7 @@ public class PlayerController : MonoBehaviour
             FaceDirection = -1;
         }
     }
-    void CheckCeiling()
+    public void CheckCeiling()
     {
         Vector3 centerUpper, leftUpper, rightUpper;
         Vector3 yOffset = new Vector3(0f, _boxCollider.size.y * 0.5f, 0f);
@@ -256,7 +254,7 @@ public class PlayerController : MonoBehaviour
 
         IsCeiling = (centerHit.collider != null || leftHit.collider != null || rightHit.collider != null);
     }
-    void CheckGround()
+    public void CheckGround()
     {
         Vector3 centerBottom, leftBottom, rightBottom;
         Vector3 yOffset = new Vector3(0f, _boxCollider.size.y * 0.5f, 0f);

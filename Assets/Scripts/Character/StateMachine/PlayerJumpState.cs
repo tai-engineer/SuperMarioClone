@@ -18,6 +18,8 @@ public class PlayerJumpState : PlayerState
 
     public override void FixedUpdate(PlayerStateController state, PlayerController player)
     {
+        player.CheckGround();
+        player.CheckCeiling();
         player.AirborneVerticalMovement();
         player.AirborneHorizontalMovement();
     }

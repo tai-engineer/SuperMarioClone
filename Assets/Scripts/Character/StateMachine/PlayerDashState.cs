@@ -19,9 +19,10 @@ public class PlayerDashState : PlayerState
 
     public override void FixedUpdate(PlayerStateController state, PlayerController player)
     {
+        player.CheckGround();
         player.GroundVericalMovement();
         player.GroundHorizontalMovement();
-        player.DashMovement();
+        player.HorizontalDashMovement();
     }
 
     public override void Update(PlayerStateController state, PlayerController player)

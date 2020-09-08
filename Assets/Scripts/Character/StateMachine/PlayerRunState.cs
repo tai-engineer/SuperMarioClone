@@ -17,6 +17,7 @@ public class PlayerRunState : PlayerState
 
     public override void FixedUpdate(PlayerStateController state, PlayerController player)
     {
+        player.CheckGround();
         player.GroundVericalMovement();
         player.GroundHorizontalMovement();
     }
