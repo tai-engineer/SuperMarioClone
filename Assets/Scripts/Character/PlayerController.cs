@@ -2,14 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public enum PlayerType
+{
+    Small,
+    Big
+}
 [RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(Player))]
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(PlayerStateController))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(AudioSource))]
-
+[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
     #region Type
@@ -17,16 +21,16 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region References
-    Player _player;
     PlayerInput _playerInput;
     Animator _animator;
     SpriteRenderer _render;
     AudioSource _audio;
+    BoxCollider2D _boxCollider;
+    Rigidbody2D _rb;
     #endregion
 
     #region Movement
     Vector2 _moveVector = Vector2.zero;
-
     #region Jump
     public float jumpSpeed = 20f;
     public float jumpAbortSpeedReduction = 100f;
@@ -80,23 +84,28 @@ public class PlayerController : MonoBehaviour
     public ParticleSystem dashEffect;
     public float dashMaxVelocity;
     #endregion
+    #region Collisions
+    public float collisionCheckDistance = 0.2f;
+    public LayerMask collisionLayer;
+    #endregion
     #region Getter/Setter
     public PlayerType Type { get { return _type; } }
     public PlayerInput Input { get { return _playerInput; } }
     public Vector2 MoveVector { get { return _moveVector; } }
     public int FaceDirection { get; set; }
-    public bool IsGrounded { get { return _player.IsGrounded; } }
-    public bool IsCeiling { get { return _player.IsCeiling; } }
+    public bool IsCeiling { get; private set; }
+    public bool IsGrounded { get; private set; }
     public bool IsBigTransform { get {return _animator.GetBool(triggerBigTransformParameter); }  }
     public bool IsDashing { get; private set; }
     #endregion
     void Awake()
     {
-        _player = GetComponent<Player>();
         _playerInput = GetComponent<PlayerInput>();
         _animator = GetComponent<Animator>();
         _render = GetComponent<SpriteRenderer>();
         _audio = GetComponent<AudioSource>();
+        _boxCollider = GetComponent<BoxCollider2D>();
+        _rb = GetComponent<Rigidbody2D>();
 
         _playerState = new PlayerStateController(this);
     }
@@ -109,6 +118,8 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         _playerState.Update();
+        CheckCeiling();
+        CheckGround();
     }
 
     void FixedUpdate()
@@ -116,7 +127,11 @@ public class PlayerController : MonoBehaviour
         _playerState.FixedUpdate();
         Flip();
 
-        _player.Move(_moveVector);
+        Move(_moveVector);
+    }
+    public void Move(Vector2 nextMovement)
+    {
+        _rb.MovePosition(_rb.position + nextMovement * Time.fixedDeltaTime);
     }
     public void AirborneVerticalMovement()
     {
@@ -127,7 +142,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Reset up vector when hit upper obstacle
-        if (Mathf.Approximately(_moveVector.y, 0f) || _player.IsCeiling && _moveVector.y > 0f)
+        if (Mathf.Approximately(_moveVector.y, 0f) || IsCeiling && _moveVector.y > 0f)
         {
             _moveVector.y = 0f;
         }
@@ -165,13 +180,13 @@ public class PlayerController : MonoBehaviour
                 float desiredSpeed = _playerInput.Horizontal.Value * dashSpeed;
                 _moveVector.x = Mathf.MoveTowards(_moveVector.x, desiredSpeed, dashAcceleration * Time.fixedDeltaTime);
 
-                if (Mathf.Abs(_player.rigidBody.position.x - lastImageXPos) > distanceBetweenImages)
+                if (Mathf.Abs(_rb.position.x - lastImageXPos) > distanceBetweenImages)
                 {
                     PlayerAfterImagePool.Instance.GetFromPool();
-                    lastImageXPos = _player.rigidBody.position.x;
+                    lastImageXPos = _rb.position.x;
                 } 
             }
-            else if(dashTimeLeft <= 0 || !_player.IsGrounded)
+            else if(dashTimeLeft <= 0 || !IsGrounded)
             {
                 IsDashing = false;
             }
@@ -184,7 +199,7 @@ public class PlayerController : MonoBehaviour
         lastDash = Time.time;
 
         PlayerAfterImagePool.Instance.GetFromPool();
-        lastImageXPos = _player.rigidBody.position.x;
+        lastImageXPos = _rb.position.x;
     }
     public void CreateDashEffect()
     {
@@ -221,14 +236,54 @@ public class PlayerController : MonoBehaviour
             FaceDirection = -1;
         }
     }
+    void CheckCeiling()
+    {
+        Vector3 centerUpper, leftUpper, rightUpper;
+        Vector3 yOffset = new Vector3(0f, _boxCollider.size.y * 0.5f, 0f);
+        Vector3 xOffset = new Vector3(_boxCollider.size.x * 0.5f, 0f, 0f);
+
+        centerUpper = _boxCollider.bounds.center + yOffset;
+        leftUpper = centerUpper - xOffset;
+        rightUpper = centerUpper + xOffset;
+        Vector3 distance = new Vector3(0f, collisionCheckDistance, 0f);
+
+        // Avoid overlap with player's box collider
+        _boxCollider.enabled = false;
+        RaycastHit2D centerHit = Physics2D.Linecast(centerUpper, centerUpper + distance, collisionLayer);
+        RaycastHit2D leftHit = Physics2D.Linecast(leftUpper, leftUpper + distance, collisionLayer);
+        RaycastHit2D rightHit = Physics2D.Linecast(rightUpper, rightUpper + distance, collisionLayer);
+        _boxCollider.enabled = true;
+
+        IsCeiling = (centerHit.collider != null || leftHit.collider != null || rightHit.collider != null);
+    }
+    void CheckGround()
+    {
+        Vector3 centerBottom, leftBottom, rightBottom;
+        Vector3 yOffset = new Vector3(0f, _boxCollider.size.y * 0.5f, 0f);
+        Vector3 xOffset = new Vector3(_boxCollider.size.x * 0.5f, 0f, 0f);
+
+        centerBottom = _boxCollider.bounds.center - yOffset;
+        leftBottom = centerBottom - xOffset;
+        rightBottom = centerBottom + xOffset;
+        Vector3 distance = new Vector3(0f, collisionCheckDistance, 0f);
+
+        // Avoid overlap with player's box collider
+        _boxCollider.enabled = false;
+        RaycastHit2D centerHit = Physics2D.Linecast(centerBottom, centerBottom - distance, collisionLayer);
+        RaycastHit2D leftHit = Physics2D.Linecast(leftBottom, leftBottom -distance, collisionLayer);
+        RaycastHit2D rightHit = Physics2D.Linecast(rightBottom, rightBottom - distance, collisionLayer);
+        _boxCollider.enabled = true;
+
+        IsGrounded = (centerHit.collider != null || leftHit.collider != null || rightHit.collider != null);
+    }
     public void BigTransform()
     {
         SetParameter(triggerBigTransformParameter);
         powerUpSound.Play(_audio);
         // Change box collider size to match with sprite size
         Vector2 spriteSize = _render.sprite.bounds.size;
-        _player.boxCollider.size = spriteSize;
-        _player.boxCollider.offset = new Vector2(0f, 1f);
+        _boxCollider.size = spriteSize;
+        _boxCollider.offset = new Vector2(0f, 1f);
     }
     public void FireShooter()
     {
