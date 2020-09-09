@@ -18,27 +18,30 @@ public class PlayerRunState : PlayerState
     public override void FixedUpdate(PlayerStateController state, PlayerController player)
     {
         player.CheckGround();
-        player.GroundVericalMovement();
+        if (player.IsGrounded)
+        {
+            player.SetJumpSpeed(0f);
+        }
+        player.GroundVerticalMovement();
         player.GroundHorizontalMovement();
     }
-
     public override void Update(PlayerStateController state, PlayerController player)
     {
         if (player.Input.Jump.Down)
         {
             state.ChangeState(player.jumpState);
         }
-        else if (!player.Input.Horizontal.Down)
-        {
-            state.ChangeState(player.idleState);
-        }
-        else if(player.IsBigTransform)
-        {
-            state.ChangeState(player.idleState);
-        }
         else if (player.Input.Dash.Down)
         {
             state.ChangeState(player.dashState);
+        }
+        else if (player.Input.MeleeAttack.Down)
+        {
+            state.ChangeState(player.meleeAttackState);
+        }
+        else if (!player.Input.Horizontal.Down)
+        {
+            state.ChangeState(player.idleState);
         }
     }
 }

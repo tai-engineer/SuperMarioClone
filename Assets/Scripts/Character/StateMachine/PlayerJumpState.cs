@@ -30,5 +30,9 @@ public class PlayerJumpState : PlayerState
         {
             state.ChangeState(player.idleState);
         }
+        else if (player.Input.MeleeAttack.Down)
+        {
+            state.ChangeState(player.meleeAttackState);
+        }
     }
 }

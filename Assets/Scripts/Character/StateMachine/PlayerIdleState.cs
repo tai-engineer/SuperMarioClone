@@ -16,19 +16,28 @@ public class PlayerIdleState : PlayerState
 
     public override void FixedUpdate(PlayerStateController state, PlayerController player)
     {
-        player.GroundVericalMovement();
+        player.CheckGround();
+        if (player.IsGrounded)
+        {
+            player.SetJumpSpeed(0f);
+        }
+        player.GroundVerticalMovement();
         player.GroundHorizontalMovement();
     }
 
     public override void Update(PlayerStateController state, PlayerController player)
     {
-        if (player.Input.Jump.Down)
+        if (player.IsGrounded && player.Input.Jump.Down)
         {
             state.ChangeState(player.jumpState);
         }
-        else if(player.Input.Horizontal.Down)
+        else if(player.IsGrounded && player.Input.Horizontal.Down)
         {
             state.ChangeState(player.runState);
+        }
+        else if(player.Input.MeleeAttack.Down)
+        {
+            state.ChangeState(player.meleeAttackState);
         }
     }
 }

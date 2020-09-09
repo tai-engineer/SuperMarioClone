@@ -7,13 +7,14 @@ public enum PlayerType
     Small,
     Big
 }
-[RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(PlayerInput))]
-[RequireComponent(typeof(PlayerStateController))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(PlayerInput))]
+[RequireComponent(typeof(PlayerStateController))]
+[RequireComponent(typeof(PlayerCombatController))]
 public class PlayerController : MonoBehaviour
 {
     #region Type
@@ -21,12 +22,13 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region References
-    PlayerInput _playerInput;
     Animator _animator;
     SpriteRenderer _render;
     AudioSource _audio;
     BoxCollider2D _boxCollider;
     Rigidbody2D _rb;
+    PlayerInput _playerInput;
+    PlayerCombatController _playerCombat;
     #endregion
 
     #region Movement
@@ -52,7 +54,6 @@ public class PlayerController : MonoBehaviour
     public float dashCooldown;
     public float dashAcceleration;
     float dashTimeLeft;
-    float lastDash;
     float lastImageXPos;
     #endregion
     #endregion
@@ -64,7 +65,7 @@ public class PlayerController : MonoBehaviour
     public PlayerJumpState jumpState = new PlayerJumpState();
     public PlayerRunState runState = new PlayerRunState();
     public PlayerDashState dashState = new PlayerDashState();
-
+    public PlayerMeleeAttackState meleeAttackState = new PlayerMeleeAttackState();
     #endregion
 
     #region Animation
@@ -76,6 +77,8 @@ public class PlayerController : MonoBehaviour
     public int triggerBigTransformParameter = Animator.StringToHash("IsBigTransform");
     [HideInInspector]
     public int boolDashParameter = Animator.StringToHash("IsDashing");
+    [HideInInspector]
+    public int boolAttackParameter = Animator.StringToHash("IsAttacking");
     #endregion
     #region Audio
     public AudioEvent powerUpSound;
@@ -91,16 +94,17 @@ public class PlayerController : MonoBehaviour
     #region Getter/Setter
     public PlayerType Type { get { return _type; } }
     public PlayerInput Input { get { return _playerInput; } }
+    public PlayerCombatController Combat { get { return _playerCombat; } }
     public Vector2 MoveVector { get { return _moveVector; } }
     public int FaceDirection { get; set; }
     public bool IsCeiling { get; private set; }
     public bool IsGrounded { get; private set; }
     public bool IsBigTransform { get {return _animator.GetBool(triggerBigTransformParameter); }  }
     public bool IsDashing { get; private set; }
+    public bool IsAttacking { get { return _playerCombat.isAttacking; } }
     #endregion
     void Awake()
     {
-        _playerInput = GetComponent<PlayerInput>();
         _animator = GetComponent<Animator>();
         _render = GetComponent<SpriteRenderer>();
         _audio = GetComponent<AudioSource>();
@@ -108,6 +112,8 @@ public class PlayerController : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
 
         _playerState = new PlayerStateController(this);
+        _playerInput = GetComponent<PlayerInput>();
+        _playerCombat = GetComponent<PlayerCombatController>();
     }
 
     void Start()
@@ -159,11 +165,11 @@ public class PlayerController : MonoBehaviour
         _moveVector.x = Mathf.MoveTowards(_moveVector.x, desiredSpeed, groundAcceleration * Time.fixedDeltaTime);
     }
     // Player is still affected by gravity when grounded
-    public void GroundVericalMovement()
+    public void GroundVerticalMovement()
     {
         _moveVector.y -= gravity * Time.fixedDeltaTime;
 
-        if (_moveVector.y < -gravity * Time.fixedDeltaTime)
+        if (_moveVector.y < -gravity * Time.fixedDeltaTime && IsGrounded)
         {
             _moveVector.y = -gravity * Time.fixedDeltaTime;
         }
@@ -194,10 +200,13 @@ public class PlayerController : MonoBehaviour
     {
         IsDashing = true;
         dashTimeLeft = dashTime;
-        lastDash = Time.time;
 
         PlayerAfterImagePool.Instance.GetFromPool();
         lastImageXPos = _rb.position.x;
+    }
+    public void FinishDash()
+    {
+        IsDashing = false;
     }
     public void CreateDashEffect()
     {

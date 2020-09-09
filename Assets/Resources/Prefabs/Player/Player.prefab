@@ -4769,6 +4769,7 @@ GameObject:
   - component: {fileID: 378173617590575805}
   - component: {fileID: 378173617590575776}
   - component: {fileID: 378173617590575807}
+  - component: {fileID: 1821096097190269577}
   - component: {fileID: 378173617590575806}
   m_Layer: 8
   m_Name: Player
@@ -4789,6 +4790,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2123297288}
+  - {fileID: 3442751821444826343}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5020,9 +5022,30 @@ MonoBehaviour:
     _key: 32
   Dash:
     _key: 304
+  MeleeAttack:
+    _key: 104
   Horizontal:
     _negative: 97
     _positive: 100
+--- !u!114 &1821096097190269577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 378173617590575801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240c70aa195198b408f77ce61a809596, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackHitBox: {fileID: 3442751821444826343}
+  attackRadius: 0.5
+  attackDamage: 0.3
+  damagableLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  isAttacking: 0
 --- !u!114 &378173617590575806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5052,6 +5075,7 @@ MonoBehaviour:
   boolRunParameter: -887662580
   triggerBigTransformParameter: -287643577
   boolDashParameter: -364528230
+  boolAttackParameter: -1130678506
   powerUpSound: {fileID: 0}
   dashEffect: {fileID: 2123297290}
   dashMaxVelocity: 10
@@ -5059,3 +5083,33 @@ MonoBehaviour:
   collisionLayer:
     serializedVersion: 2
     m_Bits: 256
+--- !u!1 &1088499749046485246
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3442751821444826343}
+  m_Layer: 8
+  m_Name: MeleeAttackHitBox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3442751821444826343
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088499749046485246}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.14, y: -0.63, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 378173617590575804}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

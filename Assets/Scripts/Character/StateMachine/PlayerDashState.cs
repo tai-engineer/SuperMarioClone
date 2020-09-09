@@ -14,26 +14,31 @@ public class PlayerDashState : PlayerState
 
     public override void ExitState(PlayerStateController state, PlayerController player)
     {
+        player.FinishDash();
         player.SetParameter(player.boolDashParameter, false);
     }
 
     public override void FixedUpdate(PlayerStateController state, PlayerController player)
     {
         player.CheckGround();
-        player.GroundVericalMovement();
+        player.GroundVerticalMovement();
         player.GroundHorizontalMovement();
         player.HorizontalDashMovement();
     }
 
     public override void Update(PlayerStateController state, PlayerController player)
     {
-        if(player.Input.Jump.Down)
+        if (!player.IsDashing)
+        {
+            state.ChangeState(player.idleState);
+        }
+        else if (player.Input.Jump.Down)
         {
             state.ChangeState(player.jumpState);
         }
-        else if (!player.IsDashing)
+        else if (player.Input.MeleeAttack.Down)
         {
-            state.ChangeState(player.idleState);
+            state.ChangeState(player.meleeAttackState);
         }
     }
 }
