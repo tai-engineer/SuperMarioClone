@@ -14,11 +14,13 @@ public class PlayerInputEditor : Editor
     SerializedProperty _horizontal;
     SerializedProperty _dash;
     SerializedProperty _meleeAttack;
+    SerializedProperty _shooting;
 
     GUIContent _jumpContent;
     GUIContent _horizontalContent;
     GUIContent _dashContent;
-    GUIContent _meleeContent;
+    GUIContent _meleeAttackContent;
+    GUIContent _shootingContent;
     void OnEnable()
     {
         _isPrefab = AssetDatabase.Contains(target);
@@ -28,11 +30,13 @@ public class PlayerInputEditor : Editor
         _horizontal = serializedObject.FindProperty("Horizontal");
         _dash = serializedObject.FindProperty("Dash");
         _meleeAttack = serializedObject.FindProperty("MeleeAttack");
+        _shooting = serializedObject.FindProperty("Shooting");
 
         _jumpContent = new GUIContent("Jump");
         _horizontalContent = new GUIContent("Horizontal");
         _dashContent = new GUIContent("Dash");
-        _meleeContent = new GUIContent("MeleeAttack");
+        _meleeAttackContent = new GUIContent("MeleeAttack");
+        _shootingContent = new GUIContent("Shooting");
     }
 
     public override void OnInspectorGUI()
@@ -46,7 +50,8 @@ public class PlayerInputEditor : Editor
             EditorGUILayout.PropertyField(_jump, _jumpContent);
             EditorGUILayout.PropertyField(_horizontal, _horizontalContent);
             EditorGUILayout.PropertyField(_dash, _dashContent);
-            EditorGUILayout.PropertyField(_meleeAttack, _meleeContent);
+            EditorGUILayout.PropertyField(_meleeAttack, _meleeAttackContent);
+            EditorGUILayout.PropertyField(_shooting, _shootingContent);
 
             EditorGUILayout.HelpBox("Modify the prefab and not this instance", MessageType.Warning);
 

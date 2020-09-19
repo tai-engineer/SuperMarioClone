@@ -39,6 +39,10 @@ public class PlayerRunState : PlayerState
         {
             state.ChangeState(player.meleeAttackState);
         }
+        else if (player.Input.Shooting.Down)
+        {
+            state.ChangeState(player.shootingState);
+        }
         else if (!player.Input.Horizontal.Down)
         {
             state.ChangeState(player.idleState);

@@ -2821,6 +2821,42 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!4 &951744599 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1637597854, guid: c30b11be5023bc54db974e15d4330858,
+    type: 3}
+  m_PrefabInstance: {fileID: 1642457768}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &967513284
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 967513285}
+  m_Layer: 8
+  m_Name: ShotPointLeft
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &967513285
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967513284}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: -0.89, y: -0.75, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1938593881}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &967768498
 GameObject:
   m_ObjectHideFlags: 0
@@ -7664,6 +7700,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1637597853, guid: c30b11be5023bc54db974e15d4330858, type: 3}
+      propertyPath: m_Name
+      value: ShotPointRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 1637597854, guid: c30b11be5023bc54db974e15d4330858, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.89
+      objectReference: {fileID: 0}
     - target: {fileID: 378173617590575801, guid: c30b11be5023bc54db974e15d4330858,
         type: 3}
       propertyPath: m_Name
@@ -7724,6 +7768,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1821096097190269577, guid: c30b11be5023bc54db974e15d4330858,
+        type: 3}
+      propertyPath: shotPointRight
+      value: 
+      objectReference: {fileID: 951744599}
+    - target: {fileID: 1821096097190269577, guid: c30b11be5023bc54db974e15d4330858,
+        type: 3}
+      propertyPath: shotPointLeft
+      value: 
+      objectReference: {fileID: 967513285}
+    - target: {fileID: 1821096097190269577, guid: c30b11be5023bc54db974e15d4330858,
+        type: 3}
+      propertyPath: shotPoint
+      value: 
+      objectReference: {fileID: 951744599}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c30b11be5023bc54db974e15d4330858, type: 3}
 --- !u!1 &1934144420
@@ -7807,6 +7866,12 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!4 &1938593881 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 378173617590575804, guid: c30b11be5023bc54db974e15d4330858,
+    type: 3}
+  m_PrefabInstance: {fileID: 1642457768}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1956731785
 GameObject:
   m_ObjectHideFlags: 0

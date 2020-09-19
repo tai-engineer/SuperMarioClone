@@ -10,11 +10,17 @@ public class PlayerCombatController : MonoBehaviour
     public LayerMask damagableLayer;
     [HideInInspector]
     public bool isAttacking = false;
+
+    public Transform shotPointRight;
+    public Transform shotPointLeft;
+    public float timeBetweenShots = 0.1f;
+    public GameObject fireBall;
+    [HideInInspector]
+    public bool isShooting = false;
     public void StartMeleeAttack()
     {
         isAttacking = true;
     }
-
     public void FinishMeleeAttack()
     {
         isAttacking = false;
@@ -29,8 +35,21 @@ public class PlayerCombatController : MonoBehaviour
             Debug.Log("Attack Hit: " + collider.gameObject.name);
         }
     }
-
-    void OnDrawGizmos()
+    public void StartShootingFireBall()
+    {
+        isShooting = true;
+    }
+    public void FinishShootingFireBall()
+    {
+        isShooting = false;
+    }
+    public void ShootFireBall(bool rightPoint)
+    {
+        Vector3 position = rightPoint ? shotPointRight.position : shotPointLeft.position;
+        Quaternion rotation = rightPoint ? shotPointRight.rotation : shotPointLeft.rotation;
+        Instantiate(fireBall, position, rotation);
+    }
+    void OnDrawGizmosSelected()
     {
         Gizmos.DrawWireSphere(attackHitBox.position, attackRadius);
     }

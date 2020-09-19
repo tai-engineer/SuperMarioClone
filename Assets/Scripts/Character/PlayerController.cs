@@ -66,8 +66,8 @@ public class PlayerController : MonoBehaviour
     public PlayerRunState runState = new PlayerRunState();
     public PlayerDashState dashState = new PlayerDashState();
     public PlayerMeleeAttackState meleeAttackState = new PlayerMeleeAttackState();
+    public PlayerShootingState shootingState = new PlayerShootingState();
     #endregion
-
     #region Animation
     [HideInInspector]
     public int boolJumpParameter = Animator.StringToHash("IsJumping");
@@ -79,6 +79,8 @@ public class PlayerController : MonoBehaviour
     public int boolDashParameter = Animator.StringToHash("IsDashing");
     [HideInInspector]
     public int boolAttackParameter = Animator.StringToHash("IsAttacking");
+    [HideInInspector]
+    public int boolShootParameter = Animator.StringToHash("IsShooting");
     #endregion
     #region Audio
     public AudioEvent powerUpSound;
@@ -96,12 +98,13 @@ public class PlayerController : MonoBehaviour
     public PlayerInput Input { get { return _playerInput; } }
     public PlayerCombatController Combat { get { return _playerCombat; } }
     public Vector2 MoveVector { get { return _moveVector; } }
-    public int FaceDirection { get; set; }
+    public bool FaceRight { get; private set; }
     public bool IsCeiling { get; private set; }
     public bool IsGrounded { get; private set; }
     public bool IsBigTransform { get {return _animator.GetBool(triggerBigTransformParameter); }  }
     public bool IsDashing { get; private set; }
     public bool IsAttacking { get { return _playerCombat.isAttacking; } }
+    public bool IsShooting { get { return _playerCombat.isShooting; } }
     #endregion
     void Awake()
     {
@@ -118,14 +121,13 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        FaceRight = true;
         _playerState.Initialize(idleState);
-        
     }
     void Update()
     {
         _playerState.Update();
     }
-
     void FixedUpdate()
     {
         _playerState.FixedUpdate();
@@ -214,7 +216,7 @@ public class PlayerController : MonoBehaviour
         dashEffect.GetComponent<ParticleSystemRenderer>().flip = new Vector3(flipX, 0f, 0f);
 
         var velocityOverTime = dashEffect.velocityOverLifetime;
-        velocityOverTime.xMultiplier = FaceDirection > 0 ? -dashMaxVelocity: dashMaxVelocity;
+        velocityOverTime.xMultiplier = FaceRight ? -dashMaxVelocity: dashMaxVelocity;
 
         dashEffect.Play();
     }
@@ -232,16 +234,20 @@ public class PlayerController : MonoBehaviour
     }
     public void Flip()
     {
-        if (_moveVector.x > 0)
+        if (!Mathf.Approximately(_moveVector.x, 0f))
         {
-            _render.flipX = false;
-            FaceDirection = 1;
+            if (_moveVector.x > Single.Epsilon)
+            {
+                _render.flipX = false;
+                FaceRight = true;
+            }
+            else if (_moveVector.x < Single.Epsilon)
+            {
+                _render.flipX = true;
+                FaceRight = false;
+            } 
         }
-        else if(_moveVector.x < 0)
-        {
-            _render.flipX = true;
-            FaceDirection = -1;
-        }
+        Debug.Log("FaceRight: " + FaceRight);
     }
     public void CheckCeiling()
     {

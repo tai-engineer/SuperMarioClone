@@ -39,5 +39,9 @@ public class PlayerIdleState : PlayerState
         {
             state.ChangeState(player.meleeAttackState);
         }
+        else if (player.Input.Shooting.Down)
+        {
+            state.ChangeState(player.shootingState);
+        }
     }
 }
