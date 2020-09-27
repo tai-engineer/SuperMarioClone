@@ -31,8 +31,6 @@ public class PlayerMeleeAttackState : PlayerState
             player.AirborneVerticalMovement();
             player.AirborneHorizontalMovement();
         }
-
-        player.Combat.CheckMeleeAttackHitBox();
     }
 
     public override void Update(PlayerStateController state, PlayerController player)

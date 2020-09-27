@@ -21,18 +21,21 @@ public class PlayerCombatController : MonoBehaviour
     {
         isAttacking = true;
     }
-    public void FinishMeleeAttack()
+
+    // Evoked by enemy animation event
+    void FinishMeleeAttack()
     {
         isAttacking = false;
     }
-    public void CheckMeleeAttackHitBox()
+    // Evoked by enemy animation event
+    void CheckMeleeAttackHitBox()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(attackHitBox.position, damagableLayer);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(attackHitBox.position, attackRadius, damagableLayer);
 
         foreach(Collider2D collider in colliders)
         {
-            //collider.transform.parent.SendMessage("TakeDamage", attackDamage);
             Debug.Log("Attack Hit: " + collider.gameObject.name);
+            collider.gameObject.SendMessage("TakeDamage", attackDamage);
         }
     }
     public void StartShootingFireBall()

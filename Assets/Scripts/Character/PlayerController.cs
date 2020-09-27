@@ -247,7 +247,6 @@ public class PlayerController : MonoBehaviour
                 FaceRight = false;
             } 
         }
-        Debug.Log("FaceRight: " + FaceRight);
     }
     public void CheckCeiling()
     {
