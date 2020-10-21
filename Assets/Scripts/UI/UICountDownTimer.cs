@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-public class CountDownTimer : MonoBehaviour
+public class UICountDownTimer : MonoBehaviour
 {
     TextMeshProUGUI _counter;
     float _timer = 0f;
@@ -16,6 +16,6 @@ public class CountDownTimer : MonoBehaviour
     {
         _timer += Time.deltaTime;
         int seconds = (int)_timer % 60;
-        _counter.SetText("" + (timeLimit - seconds));
+        _counter.SetText((timeLimit - seconds).ToString());
     }
 }
