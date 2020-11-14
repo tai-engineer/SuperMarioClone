@@ -96,4 +96,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _activeTime: 0.1
   _alphaSet: 0.8
-  player: {fileID: 378173617590575801, guid: c30b11be5023bc54db974e15d4330858, type: 3}

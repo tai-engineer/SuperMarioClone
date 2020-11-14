@@ -6,7 +6,7 @@ public class PlayerJumpState : PlayerState
 {
     public override void EnterState(PlayerStateController state, PlayerController player)
     {
-        Debug.Log("State: Jump");
+        player.CurrentState = "Jump";
         player.SetJumpSpeed(player.jumpSpeed);
         player.SetParameter(player.boolJumpParameter, true);
     }

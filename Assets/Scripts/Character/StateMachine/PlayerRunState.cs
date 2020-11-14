@@ -6,12 +6,13 @@ public class PlayerRunState : PlayerState
 {
     public override void EnterState(PlayerStateController state, PlayerController player)
     {
-        Debug.Log("State: Run");
+        player.CurrentState = "Run";
         player.SetParameter(player.boolRunParameter, true);
     }
 
     public override void ExitState(PlayerStateController state, PlayerController player)
     {
+        player.FinishDash();
         player.SetParameter(player.boolRunParameter, false);
     }
 
@@ -24,6 +25,7 @@ public class PlayerRunState : PlayerState
         }
         player.GroundVerticalMovement();
         player.GroundHorizontalMovement();
+        player.Dash();
     }
     public override void Update(PlayerStateController state, PlayerController player)
     {
@@ -33,7 +35,7 @@ public class PlayerRunState : PlayerState
         }
         else if (player.Input.Dash.Down)
         {
-            state.ChangeState(player.dashState);
+            player.StartDash();
         }
         else if (player.Input.MeleeAttack.Down)
         {

@@ -32,18 +32,20 @@ public class PlayerAfterImageSprite : MonoBehaviour
         _renderrer.flipX = _playerRenderrer.flipX;
         transform.position = _player.position;
         transform.rotation = _player.rotation;
+
+        _alpha *= _alphaMultiplier;
+        _color = new Color(1f, 1f, 1f, _alpha);
+        _renderrer.color = _color;
+
         _timeActivated = Time.time;
     }
 
     void Update()
     {
-        _alpha *= _alphaMultiplier;
-        _color = new Color(1f, 1f, 1f, _alpha);
-        _renderrer.color = _color;
 
         if(Time.time >= _timeActivated + _activeTime)
         {
-            PlayerAfterImagePool.Instance.AddPool(gameObject);
+            PlayerImagePool.Instance.AddPool(gameObject);
         }
     }
 }

@@ -64,9 +64,9 @@ public class PlayerController : MonoBehaviour
     public PlayerIdleState idleState = new PlayerIdleState();
     public PlayerJumpState jumpState = new PlayerJumpState();
     public PlayerRunState runState = new PlayerRunState();
-    public PlayerDashState dashState = new PlayerDashState();
     public PlayerMeleeAttackState meleeAttackState = new PlayerMeleeAttackState();
     public PlayerShootingState shootingState = new PlayerShootingState();
+    string _currentState;
     #endregion
     #region Animation
     [HideInInspector]
@@ -105,6 +105,7 @@ public class PlayerController : MonoBehaviour
     public bool IsDashing { get; private set; }
     public bool IsAttacking { get { return _playerCombat.isAttacking; } }
     public bool IsShooting { get { return _playerCombat.isShooting; } }
+    public string CurrentState { get { return _currentState; } set { _currentState = value; } }
     #endregion
     void Awake()
     {
@@ -126,6 +127,7 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
+        Debug.Log("Current state: " + _currentState);
         _playerState.Update();
     }
     void FixedUpdate()
@@ -176,39 +178,45 @@ public class PlayerController : MonoBehaviour
             _moveVector.y = -gravity * Time.fixedDeltaTime;
         }
     }
-    public void HorizontalDashMovement()
-    {
-        if(IsDashing)
-        {
-            if (dashTimeLeft > 0)
-            {
-                dashTimeLeft -= Time.fixedDeltaTime;
-                float desiredSpeed = _playerInput.Horizontal.Value * dashSpeed;
-                _moveVector.x = Mathf.MoveTowards(_moveVector.x, desiredSpeed, dashAcceleration * Time.fixedDeltaTime);
-
-                if (Mathf.Abs(_rb.position.x - lastImageXPos) > distanceBetweenImages)
-                {
-                    PlayerAfterImagePool.Instance.GetFromPool();
-                    lastImageXPos = _rb.position.x;
-                } 
-            }
-            else if(dashTimeLeft <= 0 || !IsGrounded)
-            {
-                IsDashing = false;
-            }
-        }
-    }
     public void StartDash()
     {
         IsDashing = true;
         dashTimeLeft = dashTime;
-
-        PlayerAfterImagePool.Instance.GetFromPool();
         lastImageXPos = _rb.position.x;
+
+        CreateDashEffect();
+        SetParameter(boolDashParameter, true);
     }
     public void FinishDash()
     {
         IsDashing = false;
+        SetParameter(boolDashParameter, false);
+    }
+    public void Dash()
+    {
+        if(!IsGrounded)
+        {
+            FinishDash();
+            return;
+        }
+
+        if (IsDashing)
+        {
+            if (dashTimeLeft > 0)
+            {
+                dashTimeLeft -= Time.fixedDeltaTime;
+
+                if (Mathf.Abs(_rb.position.x - lastImageXPos) > distanceBetweenImages)
+                {
+                    PlayerImagePool.Instance.ActivatePooledObject();
+                    lastImageXPos = _rb.position.x;
+                }
+            }
+            else if (dashTimeLeft <= 0 || !IsGrounded)
+            {
+                FinishDash();
+            }
+        }
     }
     public void CreateDashEffect()
     {

@@ -6,7 +6,7 @@ public class PlayerIdleState : PlayerState
 {
     public override void EnterState(PlayerStateController state, PlayerController player)
     {
-        Debug.Log("State: Idle");
+        player.CurrentState = "Idle";
     }
 
     public override void ExitState(PlayerStateController state, PlayerController player)
