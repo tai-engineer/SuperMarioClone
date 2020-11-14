@@ -20,8 +20,7 @@ public class PlayerController : MonoBehaviour
     #region Type
     PlayerType _type;
     #endregion
-
-    #region References
+    #region Components
     Animator _animator;
     SpriteRenderer _render;
     AudioSource _audio;
@@ -30,42 +29,53 @@ public class PlayerController : MonoBehaviour
     PlayerInput _playerInput;
     PlayerCombatController _playerCombat;
     #endregion
-
     #region Movement
     Vector2 _moveVector = Vector2.zero;
+    #endregion
     #region Jump
-    public float jumpSpeed = 20f;
-    public float jumpAbortSpeedReduction = 100f;
-    public float gravity = 50f;
-    public float airAcceleration = 100f;
-    public float airDeceleration = 100f;
+    [Header("Jump")]
+    float _jumpSpeed = 15f;
+    [SerializeField]
+    float _jumpAbortSpeedReduction = 10f;
+    [SerializeField]
+    float _gravity = 15f;
+    [SerializeField]
+    float _airAcceleration = 220;
+    [SerializeField]
+    float _airDeceleration = 200;
     #endregion
-
     #region Run
-    public float runSpeed = 10f;
-    public float groundAcceleration = 100f;
-    public float groundDeceleration = 100f;
+    [Header("Run")]
+    [SerializeField]
+    float _runSpeed = 10f;
+    [SerializeField]
+    float _groundAcceleration = 100f;
+    [SerializeField]
+    float _groundDeceleration = 100f;
     #endregion
-
     #region Dash
-    public float dashTime;
-    public float dashSpeed;
-    public float distanceBetweenImages;
-    public float dashCooldown;
-    public float dashAcceleration;
+    [Header("Dash")]
+    [SerializeField]
+    float dashTime = 0.3f;
+    [SerializeField]
+    float dashSpeed = 20f;
+    [SerializeField]
+    float distanceBetweenImages = 0.25f;
+    [SerializeField]
+    float dashCooldown = 2.0f;
+    [SerializeField]
+    float dashAcceleration = 125f;
+
     float dashTimeLeft;
     float lastImageXPos;
     #endregion
-    #endregion
-
     #region State Variables
     PlayerStateController _playerState;
-
     public PlayerIdleState idleState = new PlayerIdleState();
     public PlayerJumpState jumpState = new PlayerJumpState();
     public PlayerRunState runState = new PlayerRunState();
-    public PlayerMeleeAttackState meleeAttackState = new PlayerMeleeAttackState();
     public PlayerShootingState shootingState = new PlayerShootingState();
+
     string _currentState;
     #endregion
     #region Animation
@@ -76,22 +86,43 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public int triggerBigTransformParameter = Animator.StringToHash("IsBigTransform");
     [HideInInspector]
-    public int boolDashParameter = Animator.StringToHash("IsDashing");
+    public int _boolDashParameter = Animator.StringToHash("IsDashing");
     [HideInInspector]
-    public int boolAttackParameter = Animator.StringToHash("IsAttacking");
+    public int _boolAttackParameter = Animator.StringToHash("IsAttacking");
     [HideInInspector]
     public int boolShootParameter = Animator.StringToHash("IsShooting");
     #endregion
-    #region Audio
-    public AudioEvent powerUpSound;
-    #endregion
-    #region Effects
-    public ParticleSystem dashEffect;
-    public float dashMaxVelocity;
+    #region Sound
+    [Header("Sound")]
+    [SerializeField]
+    AudioEvent _powerUpSound;
     #endregion
     #region Collisions
-    public float collisionCheckDistance = 0.2f;
-    public LayerMask collisionLayer;
+    [Header("Collisions")]
+    [Tooltip("Uses for checking ceiling and ground")]
+    [SerializeField]
+    float _collisionCheckDistance = 0.1f;
+    [SerializeField]
+    LayerMask collisionLayer;
+    #endregion
+    #region Combat
+    [Header("Melee Attack")]
+    [SerializeField]
+    Transform _attackHitBox;
+    [SerializeField]
+    float _attackRadius = 0.5f;
+    [SerializeField]
+    float _attackDamage = 1.0f;
+    [SerializeField]
+    LayerMask _damagableLayer;
+    bool _isAttacking = false;
+    #endregion
+    #region Particles
+    [Header("Particles")]
+    [SerializeField]
+    ParticleSystem _dashEffect;
+    [SerializeField]
+    float _dashEffectVelocity = 10.0f;
     #endregion
     #region Getter/Setter
     public PlayerType Type { get { return _type; } }
@@ -103,9 +134,14 @@ public class PlayerController : MonoBehaviour
     public bool IsGrounded { get; private set; }
     public bool IsBigTransform { get {return _animator.GetBool(triggerBigTransformParameter); }  }
     public bool IsDashing { get; private set; }
-    public bool IsAttacking { get { return _playerCombat.isAttacking; } }
+    public bool IsAttacking { get { return _isAttacking; } }
     public bool IsShooting { get { return _playerCombat.isShooting; } }
-    public string CurrentState { get { return _currentState; } set { _currentState = value; } }
+    public string CurrentState
+    {
+        get { return _currentState; }
+        set { _currentState = value; }
+    }
+    public float JumpSpeed { get { return _jumpSpeed; } }
     #endregion
     void Awake()
     {
@@ -119,7 +155,6 @@ public class PlayerController : MonoBehaviour
         _playerInput = GetComponent<PlayerInput>();
         _playerCombat = GetComponent<PlayerCombatController>();
     }
-
     void Start()
     {
         FaceRight = true;
@@ -137,6 +172,7 @@ public class PlayerController : MonoBehaviour
 
         Move(_moveVector);
     }
+    #region Basic Movement
     public void Move(Vector2 nextMovement)
     {
         _rb.MovePosition(_rb.position + nextMovement * Time.fixedDeltaTime);
@@ -146,7 +182,7 @@ public class PlayerController : MonoBehaviour
         // Simulate jump action, Slowly decrease up vector toward max height
         if (_moveVector.y > 0)
         {
-            _moveVector.y -= jumpAbortSpeedReduction * Time.fixedDeltaTime;
+            _moveVector.y -= _jumpAbortSpeedReduction * Time.fixedDeltaTime;
         }
 
         // Reset up vector when hit upper obstacle
@@ -155,29 +191,31 @@ public class PlayerController : MonoBehaviour
             _moveVector.y = 0f;
         }
 
-        _moveVector.y -= gravity * Time.fixedDeltaTime;
+        _moveVector.y -= _gravity * Time.fixedDeltaTime;
     }
     public void AirborneHorizontalMovement()
     {
-        float accelerate = _playerInput.Horizontal.Down ? airAcceleration : airDeceleration;
-        float desiredSpeed = _playerInput.Horizontal.Value * runSpeed;
+        float accelerate = _playerInput.Horizontal.Down ? _airAcceleration : _airDeceleration;
+        float desiredSpeed = _playerInput.Horizontal.Value * _runSpeed;
         _moveVector.x = Mathf.MoveTowards(_moveVector.x, desiredSpeed, accelerate * Time.fixedDeltaTime);
     }
     public void GroundHorizontalMovement()
     {
-        float desiredSpeed = _playerInput.Horizontal.Value * runSpeed;
-        _moveVector.x = Mathf.MoveTowards(_moveVector.x, desiredSpeed, groundAcceleration * Time.fixedDeltaTime);
+        float desiredSpeed = _playerInput.Horizontal.Value * _runSpeed;
+        _moveVector.x = Mathf.MoveTowards(_moveVector.x, desiredSpeed, _groundAcceleration * Time.fixedDeltaTime);
     }
     // Player is still affected by gravity when grounded
     public void GroundVerticalMovement()
     {
-        _moveVector.y -= gravity * Time.fixedDeltaTime;
+        _moveVector.y -= _gravity * Time.fixedDeltaTime;
 
-        if (_moveVector.y < -gravity * Time.fixedDeltaTime && IsGrounded)
+        if (_moveVector.y < -_gravity * Time.fixedDeltaTime && IsGrounded)
         {
-            _moveVector.y = -gravity * Time.fixedDeltaTime;
+            _moveVector.y = -_gravity * Time.fixedDeltaTime;
         }
     }
+    #endregion
+    #region Dash
     public void StartDash()
     {
         IsDashing = true;
@@ -185,12 +223,12 @@ public class PlayerController : MonoBehaviour
         lastImageXPos = _rb.position.x;
 
         CreateDashEffect();
-        SetParameter(boolDashParameter, true);
+        SetParameter(_boolDashParameter, true);
     }
     public void FinishDash()
     {
         IsDashing = false;
-        SetParameter(boolDashParameter, false);
+        SetParameter(_boolDashParameter, false);
     }
     public void Dash()
     {
@@ -221,13 +259,46 @@ public class PlayerController : MonoBehaviour
     public void CreateDashEffect()
     {
         float flipX = _render.flipX ? 1.0f : 0f;
-        dashEffect.GetComponent<ParticleSystemRenderer>().flip = new Vector3(flipX, 0f, 0f);
+        _dashEffect.GetComponent<ParticleSystemRenderer>().flip = new Vector3(flipX, 0f, 0f);
 
-        var velocityOverTime = dashEffect.velocityOverLifetime;
-        velocityOverTime.xMultiplier = FaceRight ? -dashMaxVelocity: dashMaxVelocity;
+        var velocityOverTime = _dashEffect.velocityOverLifetime;
+        velocityOverTime.xMultiplier = FaceRight ? -_dashEffectVelocity: _dashEffectVelocity;
 
-        dashEffect.Play();
+        _dashEffect.Play();
     }
+    #endregion
+    #region Combat
+    public void MeleeAttack()
+    {
+        if (_isAttacking)
+        {
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(_attackHitBox.position, _attackRadius, _damagableLayer);
+
+            foreach (Collider2D collider in colliders)
+            {
+                Debug.Log("Attack Hit: " + collider.gameObject.name);
+                //TODO: implement this
+                //IDamageable damageable = collider.gameObject.GetComponent<IDamageable>();
+                //if(damageable != null)
+                //{
+                //    damageable.TakeDamage(attackDamage);
+                //}
+            } 
+        }
+    }
+    public void StartMeleeAttack()
+    {
+        _isAttacking = true;
+        SetParameter(_boolAttackParameter, true);
+    }
+    // MeleeAttack animation event 
+    public void AEFinishMeleeAttack()
+    {
+        _isAttacking = false;
+        SetParameter(_boolAttackParameter, false);
+    }
+    #endregion
+    #region Others
     public void SetJumpSpeed(float speed)
     {
         _moveVector.y = speed;
@@ -265,7 +336,7 @@ public class PlayerController : MonoBehaviour
         centerUpper = _boxCollider.bounds.center + yOffset;
         leftUpper = centerUpper - xOffset;
         rightUpper = centerUpper + xOffset;
-        Vector3 distance = new Vector3(0f, collisionCheckDistance, 0f);
+        Vector3 distance = new Vector3(0f, _collisionCheckDistance, 0f);
 
         // Avoid overlap with player's box collider
         _boxCollider.enabled = false;
@@ -285,7 +356,7 @@ public class PlayerController : MonoBehaviour
         centerBottom = _boxCollider.bounds.center - yOffset;
         leftBottom = centerBottom - xOffset;
         rightBottom = centerBottom + xOffset;
-        Vector3 distance = new Vector3(0f, collisionCheckDistance, 0f);
+        Vector3 distance = new Vector3(0f, _collisionCheckDistance, 0f);
 
         // Avoid overlap with player's box collider
         _boxCollider.enabled = false;
@@ -299,7 +370,7 @@ public class PlayerController : MonoBehaviour
     public void BigTransform()
     {
         SetParameter(triggerBigTransformParameter);
-        powerUpSound.Play(_audio);
+        _powerUpSound.Play(_audio);
         // Change box collider size to match with sprite size
         Vector2 spriteSize = _render.sprite.bounds.size;
         _boxCollider.size = spriteSize;
@@ -313,4 +384,9 @@ public class PlayerController : MonoBehaviour
     {
         return;
     }
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(_attackHitBox.position, _attackRadius);
+    }
+    #endregion
 }

@@ -7,7 +7,7 @@ public class PlayerJumpState : PlayerState
     public override void EnterState(PlayerStateController state, PlayerController player)
     {
         player.CurrentState = "Jump";
-        player.SetJumpSpeed(player.jumpSpeed);
+        player.SetJumpSpeed(player.JumpSpeed);
         player.SetParameter(player.boolJumpParameter, true);
     }
 
@@ -22,6 +22,7 @@ public class PlayerJumpState : PlayerState
         player.CheckCeiling();
         player.AirborneVerticalMovement();
         player.AirborneHorizontalMovement();
+        player.MeleeAttack();
     }
 
     public override void Update(PlayerStateController state, PlayerController player)
@@ -30,13 +31,13 @@ public class PlayerJumpState : PlayerState
         {
             state.ChangeState(player.idleState);
         }
-        else if (player.Input.MeleeAttack.Down)
-        {
-            state.ChangeState(player.meleeAttackState);
-        }
         else if (player.Input.Shooting.Down)
         {
             state.ChangeState(player.shootingState);
+        }
+        else if (player.Input.MeleeAttack.Down)
+        {
+            player.StartMeleeAttack();
         }
     }
 }

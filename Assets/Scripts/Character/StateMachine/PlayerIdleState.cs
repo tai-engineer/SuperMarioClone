@@ -23,6 +23,7 @@ public class PlayerIdleState : PlayerState
         }
         player.GroundVerticalMovement();
         player.GroundHorizontalMovement();
+        player.MeleeAttack();
     }
 
     public override void Update(PlayerStateController state, PlayerController player)
@@ -35,13 +36,13 @@ public class PlayerIdleState : PlayerState
         {
             state.ChangeState(player.runState);
         }
-        else if(player.Input.MeleeAttack.Down)
-        {
-            state.ChangeState(player.meleeAttackState);
-        }
         else if (player.Input.Shooting.Down)
         {
             state.ChangeState(player.shootingState);
+        }
+        else if (player.Input.MeleeAttack.Down)
+        {
+            player.StartMeleeAttack();
         }
     }
 }
