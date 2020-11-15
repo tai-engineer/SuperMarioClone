@@ -24,6 +24,7 @@ public class FireBall : MonoBehaviour
         {
             hit = true;
             Debug.Log("Hit: " + hitInfo.collider.gameObject.name);
+            //TODO: Implement take damage
         }
 
         transform.Translate(transform.right * speed * Time.deltaTime, Space.World);

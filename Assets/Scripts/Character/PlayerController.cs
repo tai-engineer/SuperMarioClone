@@ -14,7 +14,6 @@ public enum PlayerType
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(PlayerInput))]
 [RequireComponent(typeof(PlayerStateController))]
-[RequireComponent(typeof(PlayerCombatController))]
 public class PlayerController : MonoBehaviour
 {
     #region Type
@@ -27,7 +26,6 @@ public class PlayerController : MonoBehaviour
     BoxCollider2D _boxCollider;
     Rigidbody2D _rb;
     PlayerInput _playerInput;
-    PlayerCombatController _playerCombat;
     #endregion
     #region Movement
     Vector2 _moveVector = Vector2.zero;
@@ -74,7 +72,6 @@ public class PlayerController : MonoBehaviour
     public PlayerIdleState idleState = new PlayerIdleState();
     public PlayerJumpState jumpState = new PlayerJumpState();
     public PlayerRunState runState = new PlayerRunState();
-    public PlayerShootingState shootingState = new PlayerShootingState();
 
     string _currentState;
     #endregion
@@ -90,7 +87,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public int _boolAttackParameter = Animator.StringToHash("IsAttacking");
     [HideInInspector]
-    public int boolShootParameter = Animator.StringToHash("IsShooting");
+    public int _boolShootParameter = Animator.StringToHash("IsShooting");
     #endregion
     #region Sound
     [Header("Sound")]
@@ -116,6 +113,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     LayerMask _damagableLayer;
     bool _isAttacking = false;
+
+    [Header("Shoot")]
+    [SerializeField]
+    Transform _shotPointRight;
+    [SerializeField]
+    Transform _shotPointLeft;
+    [SerializeField]
+    float _timeBetweenShots = 0.1f;
+    [SerializeField]
+    GameObject _fireBall;
+    bool _startShooting = false;
+    bool _isShooting = false;
     #endregion
     #region Particles
     [Header("Particles")]
@@ -127,7 +136,6 @@ public class PlayerController : MonoBehaviour
     #region Getter/Setter
     public PlayerType Type { get { return _type; } }
     public PlayerInput Input { get { return _playerInput; } }
-    public PlayerCombatController Combat { get { return _playerCombat; } }
     public Vector2 MoveVector { get { return _moveVector; } }
     public bool FaceRight { get; private set; }
     public bool IsCeiling { get; private set; }
@@ -135,13 +143,13 @@ public class PlayerController : MonoBehaviour
     public bool IsBigTransform { get {return _animator.GetBool(triggerBigTransformParameter); }  }
     public bool IsDashing { get; private set; }
     public bool IsAttacking { get { return _isAttacking; } }
-    public bool IsShooting { get { return _playerCombat.isShooting; } }
     public string CurrentState
     {
         get { return _currentState; }
         set { _currentState = value; }
     }
     public float JumpSpeed { get { return _jumpSpeed; } }
+    public bool IsShooting { get { return _isShooting; } }
     #endregion
     void Awake()
     {
@@ -153,7 +161,6 @@ public class PlayerController : MonoBehaviour
 
         _playerState = new PlayerStateController(this);
         _playerInput = GetComponent<PlayerInput>();
-        _playerCombat = GetComponent<PlayerCombatController>();
     }
     void Start()
     {
@@ -296,6 +303,28 @@ public class PlayerController : MonoBehaviour
     {
         _isAttacking = false;
         SetParameter(_boolAttackParameter, false);
+    }
+
+    public void ShootFireBall(bool rightPoint)
+    {
+        if (_startShooting && !_isShooting)
+        {
+            Vector3 position = rightPoint ? _shotPointRight.position : _shotPointLeft.position;
+            Quaternion rotation = rightPoint ? _shotPointRight.rotation : _shotPointLeft.rotation;
+            Instantiate(_fireBall, position, rotation);
+            _isShooting = true;
+        }
+    }
+    public void StartShootingFireBall()
+    {
+        _startShooting = true;
+        SetParameter(_boolShootParameter, true);
+    }
+    public void AEFinishShootingFireBall()
+    {
+        _startShooting = false;
+        _isShooting = false;
+        SetParameter(_boolShootParameter, false);
     }
     #endregion
     #region Others

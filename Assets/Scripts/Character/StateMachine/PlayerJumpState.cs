@@ -23,6 +23,7 @@ public class PlayerJumpState : PlayerState
         player.AirborneVerticalMovement();
         player.AirborneHorizontalMovement();
         player.MeleeAttack();
+        player.ShootFireBall(player.FaceRight);
     }
 
     public override void Update(PlayerStateController state, PlayerController player)
@@ -31,13 +32,13 @@ public class PlayerJumpState : PlayerState
         {
             state.ChangeState(player.idleState);
         }
-        else if (player.Input.Shooting.Down)
-        {
-            state.ChangeState(player.shootingState);
-        }
         else if (player.Input.MeleeAttack.Down)
         {
             player.StartMeleeAttack();
+        }
+        else if (player.Input.Shooting.Down)
+        {
+            player.StartShootingFireBall();
         }
     }
 }

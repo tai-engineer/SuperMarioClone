@@ -12951,6 +12951,22 @@ PrefabInstance:
       propertyPath: _dashEffect
       value: 
       objectReference: {fileID: 1973901236}
+    - target: {fileID: 378173617590575806, guid: c30b11be5023bc54db974e15d4330858,
+        type: 3}
+      propertyPath: _shotPointRight
+      value: 
+      objectReference: {fileID: 951744599}
+    - target: {fileID: 378173617590575806, guid: c30b11be5023bc54db974e15d4330858,
+        type: 3}
+      propertyPath: _shotPointLeft
+      value: 
+      objectReference: {fileID: 967513285}
+    - target: {fileID: 378173617590575806, guid: c30b11be5023bc54db974e15d4330858,
+        type: 3}
+      propertyPath: _fireBall
+      value: 
+      objectReference: {fileID: 8788605342561250494, guid: 234df797809f84e4bb270862729262aa,
+        type: 3}
     - target: {fileID: 1088499749046485246, guid: c30b11be5023bc54db974e15d4330858,
         type: 3}
       propertyPath: m_Icon

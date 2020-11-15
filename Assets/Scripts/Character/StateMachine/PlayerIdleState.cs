@@ -24,6 +24,7 @@ public class PlayerIdleState : PlayerState
         player.GroundVerticalMovement();
         player.GroundHorizontalMovement();
         player.MeleeAttack();
+        player.ShootFireBall(player.FaceRight);
     }
 
     public override void Update(PlayerStateController state, PlayerController player)
@@ -38,7 +39,7 @@ public class PlayerIdleState : PlayerState
         }
         else if (player.Input.Shooting.Down)
         {
-            state.ChangeState(player.shootingState);
+            player.StartShootingFireBall();
         }
         else if (player.Input.MeleeAttack.Down)
         {

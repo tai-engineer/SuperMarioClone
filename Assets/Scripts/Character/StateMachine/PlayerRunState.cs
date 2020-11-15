@@ -27,6 +27,7 @@ public class PlayerRunState : PlayerState
         player.GroundHorizontalMovement();
         player.Dash();
         player.MeleeAttack();
+        player.ShootFireBall(player.FaceRight);
     }
     public override void Update(PlayerStateController state, PlayerController player)
     {
@@ -34,21 +35,21 @@ public class PlayerRunState : PlayerState
         {
             state.ChangeState(player.jumpState);
         }
-        else if (player.Input.Dash.Down)
-        {
-            player.StartDash();
-        }
-        else if (player.Input.Shooting.Down)
-        {
-            state.ChangeState(player.shootingState);
-        }
         else if (!player.Input.Horizontal.Down)
         {
             state.ChangeState(player.idleState);
         }
+        else if (player.Input.Dash.Down)
+        {
+            player.StartDash();
+        }
         else if (player.Input.MeleeAttack.Down)
         {
             player.StartMeleeAttack();
+        }
+        else if (player.Input.Shooting.Down)
+        {
+            player.StartShootingFireBall();
         }
     }
 }
