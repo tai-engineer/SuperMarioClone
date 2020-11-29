@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &967513284
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 967513285}
+  m_Layer: 8
+  m_Name: ShotPointLeft
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &967513285
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 967513284}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: -1.2, y: -0.75, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 378173617590575804}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &1637597853
 GameObject:
   m_ObjectHideFlags: 0
@@ -10,7 +40,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1637597854}
   m_Layer: 8
-  m_Name: ShotPoint
+  m_Name: ShotPointRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24,7 +54,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1637597853}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.89, y: -0.75, z: 0}
+  m_LocalPosition: {x: 1.2, y: -0.75, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 378173617590575804}
@@ -45,7 +75,6 @@ GameObject:
   - component: {fileID: 378173617590575805}
   - component: {fileID: 378173617590575776}
   - component: {fileID: 378173617590575807}
-  - component: {fileID: 1821096097190269577}
   - component: {fileID: 378173617590575806}
   m_Layer: 8
   m_Name: Player
@@ -68,6 +97,7 @@ Transform:
   - {fileID: 2123297288}
   - {fileID: 3442751821444826343}
   - {fileID: 1637597854}
+  - {fileID: 967513285}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -306,31 +336,6 @@ MonoBehaviour:
   Horizontal:
     _negative: 97
     _positive: 100
---- !u!114 &1821096097190269577
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 378173617590575801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 240c70aa195198b408f77ce61a809596, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attackHitBox: {fileID: 3442751821444826343}
-  attackRadius: 0.5
-  attackDamage: 0.3
-  damagableLayer:
-    serializedVersion: 2
-    m_Bits: 256
-  isAttacking: 0
-  shotPointRight: {fileID: 0}
-  shotPointLeft: {fileID: 0}
-  timeBetweenShots: 0.1
-  fireBall: {fileID: 8788605342561250494, guid: 234df797809f84e4bb270862729262aa,
-    type: 3}
-  isShooting: 0
 --- !u!114 &378173617590575806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -352,27 +357,32 @@ MonoBehaviour:
   _groundDeceleration: 100
   dashTime: 0.3
   dashSpeed: 20
-  distanceBetweenImages: 0.1
+  distanceBetweenImages: 0.25
   dashCooldown: 2
   dashAcceleration: 125
   boolJumpParameter: 1749078233
   boolRunParameter: -887662580
   triggerBigTransformParameter: -287643577
-  boolDashParameter: -364528230
-  boolAttackParameter: -1130678506
-  boolShootParameter: 1120429326
+  _boolDashParameter: -364528230
+  _boolAttackParameter: -1130678506
+  _boolShootParameter: 1120429326
   _powerUpSound: {fileID: 0}
   _collisionCheckDistance: 0.1
   collisionLayer:
     serializedVersion: 2
     m_Bits: 256
-  _attackHitBox: {fileID: 0}
+  _attackHitBox: {fileID: 3442751821444826343}
   _attackRadius: 0.5
   _attackDamage: 1
   _damagableLayer:
     serializedVersion: 2
-    m_Bits: 0
-  _dashEffect: {fileID: 0}
+    m_Bits: 256
+  _shotPointRight: {fileID: 1637597854}
+  _shotPointLeft: {fileID: 967513285}
+  _timeBetweenShots: 0.1
+  _fireBall: {fileID: 8788605342561250494, guid: 234df797809f84e4bb270862729262aa,
+    type: 3}
+  _dashEffect: {fileID: 2123297290}
   _dashEffectVelocity: 10
 --- !u!1 &1088499749046485246
 GameObject:
@@ -476,6 +486,12 @@ PrefabInstance:
 --- !u!4 &2123297288 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5616938922721007089, guid: 575d5f2072138144790b179a3bf39162,
+    type: 3}
+  m_PrefabInstance: {fileID: 5616938922813106169}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &2123297290 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 5616938922721007091, guid: 575d5f2072138144790b179a3bf39162,
     type: 3}
   m_PrefabInstance: {fileID: 5616938922813106169}
   m_PrefabAsset: {fileID: 0}

@@ -109,7 +109,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float _attackRadius = 0.5f;
     [SerializeField]
-    float _attackDamage = 1.0f;
+    int _attackDamage = 1;
     [SerializeField]
     LayerMask _damagableLayer;
     bool _isAttacking = false;
@@ -123,8 +123,13 @@ public class PlayerController : MonoBehaviour
     float _timeBetweenShots = 0.1f;
     [SerializeField]
     GameObject _fireBall;
+    [SerializeField]
     bool _startShooting = false;
     bool _isShooting = false;
+    [SerializeField]
+    [Range(0.0f, 1.0f)]
+    float _shootingRate = 0.1f;
+    float _shootingTime = 0.0f;
     #endregion
     #region Particles
     [Header("Particles")]
@@ -283,13 +288,12 @@ public class PlayerController : MonoBehaviour
 
             foreach (Collider2D collider in colliders)
             {
-                Debug.Log("Attack Hit: " + collider.gameObject.name);
-                //TODO: implement this
-                //IDamageable damageable = collider.gameObject.GetComponent<IDamageable>();
-                //if(damageable != null)
-                //{
-                //    damageable.TakeDamage(attackDamage);
-                //}
+                IDamageable damageable = collider.gameObject.GetComponent<IDamageable>();
+                if (damageable != null)
+                {
+                    Debug.Log("Melee Attack hits " + collider.gameObject.name + " with " + _attackDamage + " damage");
+                    damageable.TakeDamage(_attackDamage);
+                }
             } 
         }
     }
@@ -309,21 +313,31 @@ public class PlayerController : MonoBehaviour
     {
         if (_startShooting && !_isShooting)
         {
+            // Time between shots
+            if(Time.time < _shootingTime + _shootingRate)
+            {
+                return;
+            }
+
             Vector3 position = rightPoint ? _shotPointRight.position : _shotPointLeft.position;
             Quaternion rotation = rightPoint ? _shotPointRight.rotation : _shotPointLeft.rotation;
             Instantiate(_fireBall, position, rotation);
+
+            SetParameter(_boolShootParameter, true);
+
             _isShooting = true;
+            _shootingTime = Time.time;
         }
     }
     public void StartShootingFireBall()
     {
         _startShooting = true;
-        SetParameter(_boolShootParameter, true);
     }
     public void AEFinishShootingFireBall()
     {
         _startShooting = false;
         _isShooting = false;
+        _shootingTime = 0.0f;
         SetParameter(_boolShootParameter, false);
     }
     #endregion

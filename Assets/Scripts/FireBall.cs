@@ -2,35 +2,61 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class FireBall : MonoBehaviour
 {
-    public float speed;
-    public float lifeTime;
-    public float distance;
-    public float impactDistance;
-    public LayerMask solidLayer;
+    [SerializeField]
+    [Range(1f, 3f)]
+    float _speed = 1.0f;
+    [SerializeField]
+    float _lifeTime = 0.5f;
+    [SerializeField]
+    int _damage = 1;
 
-    public GameObject destroyEffect;
+    [SerializeField]
+    GameObject destroyEffect = null;
+
+    float _maxDistance = 5.0f;
     float _lifeTimeLeft;
     bool hit = false;
+
+    Rigidbody2D _rb;
+    Vector2 _moveVector = Vector2.zero;
+    void Awake()
+    {
+        _rb = GetComponent<Rigidbody2D>();
+    }
     void Start()
     {
-        _lifeTimeLeft = lifeTime;
+        _lifeTimeLeft = _lifeTime;
     }
-    void Update()
+
+    void FixedUpdate()
     {
-        RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, transform.right, impactDistance, solidLayer);
-        if(hitInfo.collider != null)
+        //TODO: Change to use rigid body movement
+        _moveVector.x = Mathf.MoveTowards(_moveVector.x, transform.right.x * _maxDistance, _speed * Time.fixedDeltaTime);
+        _rb.MovePosition(_rb.position + _moveVector);
+
+        _lifeTimeLeft -= Time.fixedDeltaTime;
+        DestroyFireBall();
+    }
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Avoid self hit
+        if (collision.gameObject.CompareTag("Player"))
         {
-            hit = true;
-            Debug.Log("Hit: " + hitInfo.collider.gameObject.name);
-            //TODO: Implement take damage
+            Debug.Log("Self-hit!");
+            return;
         }
 
-        transform.Translate(transform.right * speed * Time.deltaTime, Space.World);
-        _lifeTimeLeft -= Time.deltaTime;
-        DestroyFireBall();
-        
+        hit = true;
+        Debug.Log("Hit " + collision.gameObject.name);
+        IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();
+        if (damageable != null)
+        {
+            Debug.Log("FireBall hits " + collision.gameObject.name + " with " + _damage + " damage");
+            damageable.TakeDamage(_damage);
+        }
     }
 
     void DestroyFireBall()

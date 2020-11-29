@@ -5,23 +5,34 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Animator))]
-public class BasicEnemyController : MonoBehaviour
+public class BasicEnemyController : MonoBehaviour, IDamageable
 {
-    public float health = 1f;
-    public float speed = 10f;
-    public Transform head;
-    public float headCheckRadius;
-    public Transform wallCheckPoint;
-    public float wallCheckDistance = 0.2f;
-    public LayerMask layer;
-    int _faceDirection = 1;
-    bool _isWallDetected = false;
-    bool _isStomped = false;
-    bool _isDead = false;
-
+    #region References
     Rigidbody2D _rb;
     AudioSource _audioPlayer;
     Animator _anim;
+    #endregion
+
+    #region Private Variables
+    [SerializeField]
+    int health = 1;
+    [SerializeField]
+    float speed = 4.0f;
+    [SerializeField]
+    Transform wallCheckPoint;
+    [SerializeField]
+    float wallCheckDistance = 0.2f;
+    [SerializeField]
+    LayerMask layer;
+    [SerializeField]
+    AudioClip _deadClip;
+
+    int _faceDirection = 1;
+    bool _isWallDetected = false;
+    bool _isDead = false;
+    Vector2 _moveVector;
+    #endregion
+
     void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -31,7 +42,6 @@ public class BasicEnemyController : MonoBehaviour
     void Update()
     {
         WallCheck();
-        HeadCheck();
         if (_isWallDetected)
         {
             Flip();
@@ -41,34 +51,38 @@ public class BasicEnemyController : MonoBehaviour
     void FixedUpdate()
     {
         Patrol();
+        Die();
+
+        _rb.MovePosition(_rb.position + _moveVector);
     }
     void Patrol()
     {
-        Vector2 moveVector = new Vector3(speed * _faceDirection * Time.fixedDeltaTime, 0f);
-        _rb.MovePosition(_rb.position + moveVector);
+         _moveVector = new Vector3(speed * _faceDirection * Time.fixedDeltaTime, 0f);
     }
 
-    public void TakeDamage(float damgage)
+    public void TakeDamage(int damgage)
     {
         if (_isDead)
         {
             return;
         }
 
-        health = health < 0f ? 0f : health - damgage;
+        health = health < 0 ? 0 : health - damgage;
         if(health <= 0)
         {
-            Die();
+            _isDead = true;
+            _audioPlayer.PlayOneShot(_deadClip);
+            _anim.SetBool("IsDead", _isDead);
         }
-        _isStomped = false;
     }
 
     void Die()
     {
-        _isDead = true;
-        _audioPlayer.Play();
-        _anim.SetBool("IsDead", _isDead);
-        Destroy(gameObject, 0.5f);
+        if (_isDead)
+        {
+            _moveVector = Vector2.zero;
+            Destroy(gameObject, _deadClip.length);
+        }
     }
     void Flip()
     {
@@ -82,15 +96,6 @@ public class BasicEnemyController : MonoBehaviour
         if(hit.collider != null && hit.collider.gameObject.CompareTag("Pipe"))
         {
             _isWallDetected = true;
-        }
-    }
-
-    void HeadCheck()
-    {
-        Collider2D collider = Physics2D.OverlapCircle(head.position, headCheckRadius, layer);
-        if (collider != null && collider.gameObject.CompareTag("Player"))
-        {
-            _isStomped = true;
         }
     }
 
