@@ -15,10 +15,6 @@ public class BasicEnemyController : MonoBehaviour, IDamageable
 
     #region Private Variables
     [SerializeField]
-    int health = 1;
-    [SerializeField]
-    float speed = 4.0f;
-    [SerializeField]
     Transform wallCheckPoint;
     [SerializeField]
     float wallCheckDistance = 0.2f;
@@ -26,6 +22,10 @@ public class BasicEnemyController : MonoBehaviour, IDamageable
     LayerMask layer;
     [SerializeField]
     AudioClip _deadClip;
+    [SerializeField]
+    GameObject _scorePopUp;
+    [SerializeField]
+    BasicEnemy_SO _enemyDefinition;
 
     int _faceDirection = 1;
     bool _isWallDetected = false;
@@ -33,12 +33,15 @@ public class BasicEnemyController : MonoBehaviour, IDamageable
     Vector2 _moveVector;
     #endregion
 
+    public BasicEnemy_SO EnemyDefinition { get { return _enemyDefinition; } }
+
     void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
         _audioPlayer = GetComponent<AudioSource>();
         _anim = GetComponent<Animator>();
     }
+
     void Update()
     {
         WallCheck();
@@ -57,7 +60,7 @@ public class BasicEnemyController : MonoBehaviour, IDamageable
     }
     void Patrol()
     {
-         _moveVector = new Vector3(speed * _faceDirection * Time.fixedDeltaTime, 0f);
+         _moveVector = new Vector3(_enemyDefinition.speed * _faceDirection * Time.fixedDeltaTime, 0f);
     }
 
     public void TakeDamage(int damgage)
@@ -67,12 +70,13 @@ public class BasicEnemyController : MonoBehaviour, IDamageable
             return;
         }
 
-        health = health < 0 ? 0 : health - damgage;
-        if(health <= 0)
+        _enemyDefinition.health = _enemyDefinition.health < 0 ? 0 : _enemyDefinition.health - damgage;
+        if(_enemyDefinition.health <= 0)
         {
             _isDead = true;
             _audioPlayer.PlayOneShot(_deadClip);
             _anim.SetBool("IsDead", _isDead);
+            PopScore();
         }
     }
 
@@ -99,6 +103,11 @@ public class BasicEnemyController : MonoBehaviour, IDamageable
         }
     }
 
+    void PopScore()
+    {
+        Vector3 position = new Vector3(transform.position.x, transform.position.y + 0.3f, 0f);
+        UIManager.Instance.PopScore(position, _enemyDefinition.score);
+    }
     void OnDrawGizmosSelected()
     {
         Gizmos.DrawLine(wallCheckPoint.position, wallCheckPoint.position + new Vector3(wallCheckDistance, 0f, 0f));

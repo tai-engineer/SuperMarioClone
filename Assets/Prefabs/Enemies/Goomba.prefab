@@ -191,7 +191,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 0.95}
   m_EdgeRadius: 0
 --- !u!50 &2029390883256745476
 Rigidbody2D:
@@ -201,7 +201,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8648862265156655053}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -227,14 +227,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 1
-  speed: 4
-  head: {fileID: 4466361137076610415}
-  headCheckRadius: 0.2
+  speed: 0
   wallCheckPoint: {fileID: 591218318}
   wallCheckDistance: 0.1
   layer:
     serializedVersion: 2
     m_Bits: 256
+  _deadClip: {fileID: 8300000, guid: d84415726495b4d46b5a557ed2a97cfa, type: 3}
 --- !u!82 &158492477
 AudioSource:
   m_ObjectHideFlags: 0
@@ -245,7 +244,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: d84415726495b4d46b5a557ed2a97cfa, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

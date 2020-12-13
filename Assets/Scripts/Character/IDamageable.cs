@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EventsManager : Singleton<EventsManager>
+public interface IDamageable
 {
-
+    void TakeDamage(int damage);
 }
