@@ -2,7 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
+
+#region Event Classes
+public class UEOnScoreChange : UnityEvent { }
+public class UECoinCollected : UnityEvent { }
+public class UECountDownEnd : UnityEvent { }
+public class UENextLevel : UnityEvent { }
+
+#endregion
 public class UIManager : Singleton<UIManager>
 {
     [SerializeField] 
@@ -11,9 +20,21 @@ public class UIManager : Singleton<UIManager>
     Button _startButton;
     [SerializeField]
     GameObject _scorePopUp;
+
+    #region Events
+    public UEOnScoreChange OnScoreChange = new UEOnScoreChange();
+    public UECoinCollected OnCoinCollected = new UECoinCollected();
+    public UECountDownEnd OnCountDownEnd = new UECountDownEnd();
+    public UENextLevel OnNextLevel = new UENextLevel();
+
+    #endregion
+    public int Score { get { return GameManager.Instance.Score; } }
+    public string CurrentLevel { get { return GameManager.Instance.CurrentLevel; } }
+    public int CoinNumber { get { return GameManager.Instance.CoinNumber; } }
     protected override void Awake()
     {
         base.Awake();
+        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
@@ -22,13 +43,8 @@ public class UIManager : Singleton<UIManager>
         {
             _startButton.onClick.AddListener(OnStartGame); 
         }
+        OnCountDownEnd.AddListener(HandleCountDownEnd); 
     }
-    void OnStartGame()
-    {
-        GameManager.Instance.StartGame();
-        _mainMenu.SetActive(false);
-    }
-
     public void PopScore(Vector3 position, int score)
     {
         GameObject scoreObj = Instantiate(_scorePopUp);
@@ -39,5 +55,14 @@ public class UIManager : Singleton<UIManager>
             text.text = score.ToString();
         }
     }
+    void OnStartGame()
+    {
+        GameManager.Instance.StartGame();
+        _mainMenu.SetActive(false);
+    }
 
+    void HandleCountDownEnd()
+    {
+        GameManager.Instance.GameOver();
+    }
 }

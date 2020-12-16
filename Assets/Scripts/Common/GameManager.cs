@@ -2,16 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
+
 public class GameManager : Singleton<GameManager>
 {
     //TODO: Create editor script to get scene names
     string[] _level = new string[]
     {
+        "MainScene",
         "Level_1-1",
         "Level_1-2"
     };
+
+    int _levelIndex = 0;
+    string _currentLevel;
+    string _nextLevel;
+    int _coinNumber = 0;
+    int _score = 0;
     List<GameObject> _instanceSystemPrefabs; //TODO: Instantiate manager prefabs
     List<AsyncOperation> _loadOperations;
+
+    #region Getter/Setter
+    public string CurrentLevel { get { return _currentLevel; } }
+    public int Score { get { return _score; } }
+    public int CoinNumber { get { return _coinNumber; } }
+    #endregion
+
+    #region Common
+    void Start()
+    {
+        _currentLevel = "MainScene";
+    }
     protected override void Awake()
     {
         base.Awake();
@@ -19,16 +40,21 @@ public class GameManager : Singleton<GameManager>
 
         _loadOperations = new List<AsyncOperation>();
     }
-
     protected override void OnDestroy()
     {
         base.OnDestroy();
         //TODO: Destroy prefabs in _instanceSystemPrefabs
     }
+    #endregion
 
+    #region Scenes
     public void StartGame()
     {
-        LoadScene(_level[0]);
+        NextLevel();
+    }
+    public void GameOver()
+    {
+        //TODO: What happen when game is over?
     }
     public void LoadScene(string levelName)
     {
@@ -41,10 +67,6 @@ public class GameManager : Singleton<GameManager>
 
         ao.completed += OnLoadOperationComplete;
         _loadOperations.Add(ao);
-    }
-    public void LoadFirstScene()
-    {
-        LoadScene(_level[0]);
     }
     public void UnLoadScene(string levelName)
     {
@@ -67,6 +89,8 @@ public class GameManager : Singleton<GameManager>
             if (_loadOperations.Count == 0)
             {
                 // TODO: Start game after loading scene
+                UnLoadScene(_currentLevel); 
+                _currentLevel = _nextLevel;
             }
         }
     }
@@ -74,4 +98,26 @@ public class GameManager : Singleton<GameManager>
     {
         Debug.Log("Unload Comlete.");
     }
+    #endregion
+
+    #region Events
+    public void NextLevel()
+    {
+        _levelIndex++;
+        _nextLevel = _level[_levelIndex];
+        LoadScene(_nextLevel);
+        UIManager.Instance.OnNextLevel.Invoke();
+        Debug.Log("_levelIndex: " + _levelIndex);
+    }
+    public void IncreaseCoin()
+    {
+        _coinNumber++;
+        UIManager.Instance.OnCoinCollected.Invoke();
+    }
+    public void UpdateScore(int score)
+    {
+        _score += score;
+        UIManager.Instance.OnScoreChange.Invoke();
+    }
+    #endregion
 }
