@@ -18,7 +18,7 @@ public class UICountDownTimer : MonoBehaviour
     {
         if(_timeLimit <= 0)
         {
-            UIManager.Instance.OnCountDownEnd.Invoke();
+            UIManager.Instance.CountDownEndEvent.Invoke();
             return;
         }
 

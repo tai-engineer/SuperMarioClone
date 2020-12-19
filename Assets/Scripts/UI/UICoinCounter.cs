@@ -14,7 +14,7 @@ public class UICoinCounter : MonoBehaviour
 
     void Start()
     {
-        UIManager.Instance.OnCoinCollected.AddListener(OnCoinCollected);
+        UIManager.Instance.CoinCollectedEvent.AddListener(OnCoinCollected);
     }
     void OnCoinCollected()
     {

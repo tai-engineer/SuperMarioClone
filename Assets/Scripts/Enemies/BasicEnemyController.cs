@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Animator))]
-public class BasicEnemyController : MonoBehaviour, IDamageable
+public class BasicEnemyController : MonoBehaviour, IDamageable, IScore
 {
     #region References
     Rigidbody2D _rb;
@@ -42,25 +42,24 @@ public class BasicEnemyController : MonoBehaviour, IDamageable
         _anim = GetComponent<Animator>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
+        if(_isDead)
+        {
+            return;
+        }
+
         WallCheck();
         if (_isWallDetected)
         {
             Flip();
         }
-    }
-
-    void FixedUpdate()
-    {
         Patrol();
-        Die();
-
-        _rb.MovePosition(_rb.position + _moveVector);
     }
     void Patrol()
     {
          _moveVector = new Vector3(_enemyDefinition.speed * _faceDirection * Time.fixedDeltaTime, 0f);
+        _rb.MovePosition(_rb.position + _moveVector);
     }
 
     public void TakeDamage(int damgage)
@@ -74,19 +73,22 @@ public class BasicEnemyController : MonoBehaviour, IDamageable
         if(_enemyDefinition.health <= 0)
         {
             _isDead = true;
-            _audioPlayer.PlayOneShot(_deadClip);
-            _anim.SetBool("IsDead", _isDead);
+            AddScore(_enemyDefinition.score);
             PopScore();
+            Die();
         }
     }
 
     void Die()
     {
-        if (_isDead)
-        {
-            _moveVector = Vector2.zero;
-            Destroy(gameObject, _deadClip.length);
-        }
+        _audioPlayer.PlayOneShot(_deadClip);
+        _anim.SetBool("IsDead", _isDead);
+
+        _moveVector = Vector2.zero;
+
+        
+
+        Destroy(gameObject, _deadClip.length);
     }
     void Flip()
     {
@@ -102,7 +104,6 @@ public class BasicEnemyController : MonoBehaviour, IDamageable
             _isWallDetected = true;
         }
     }
-
     void PopScore()
     {
         Vector3 position = new Vector3(transform.position.x, transform.position.y + 0.3f, 0f);
@@ -111,5 +112,10 @@ public class BasicEnemyController : MonoBehaviour, IDamageable
     void OnDrawGizmosSelected()
     {
         Gizmos.DrawLine(wallCheckPoint.position, wallCheckPoint.position + new Vector3(wallCheckDistance, 0f, 0f));
+    }
+
+    public void AddScore(int score)
+    {
+        GameManager.Instance.AddScore(score);
     }
 }

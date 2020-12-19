@@ -32,6 +32,7 @@ public class GameManager : Singleton<GameManager>
     void Start()
     {
         _currentLevel = "MainScene";
+        UIManager.Instance.CountDownEndEvent.AddListener(GameOver);
     }
     protected override void Awake()
     {
@@ -55,6 +56,7 @@ public class GameManager : Singleton<GameManager>
     public void GameOver()
     {
         //TODO: What happen when game is over?
+        Debug.Log("Game Over!");
     }
     public void LoadScene(string levelName)
     {
@@ -106,18 +108,18 @@ public class GameManager : Singleton<GameManager>
         _levelIndex++;
         _nextLevel = _level[_levelIndex];
         LoadScene(_nextLevel);
-        UIManager.Instance.OnNextLevel.Invoke();
+        UIManager.Instance.NextLevelEvent.Invoke();
         Debug.Log("_levelIndex: " + _levelIndex);
     }
     public void IncreaseCoin()
     {
         _coinNumber++;
-        UIManager.Instance.OnCoinCollected.Invoke();
+        UIManager.Instance.CoinCollectedEvent.Invoke();
     }
-    public void UpdateScore(int score)
+    public void AddScore(int score)
     {
         _score += score;
-        UIManager.Instance.OnScoreChange.Invoke();
+        UIManager.Instance.ScoreUpdateEvent.Invoke();
     }
     #endregion
 }

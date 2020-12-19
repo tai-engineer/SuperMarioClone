@@ -15,7 +15,7 @@ public class UILevel : MonoBehaviour
 
     void Start()
     {
-        UIManager.Instance.OnNextLevel.AddListener(OnNextLevel);
+        UIManager.Instance.NextLevelEvent.AddListener(OnNextLevel);
     }
     void OnNextLevel()
     {

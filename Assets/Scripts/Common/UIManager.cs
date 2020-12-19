@@ -22,10 +22,10 @@ public class UIManager : Singleton<UIManager>
     GameObject _scorePopUp;
 
     #region Events
-    public UEOnScoreChange OnScoreChange = new UEOnScoreChange();
-    public UECoinCollected OnCoinCollected = new UECoinCollected();
-    public UECountDownEnd OnCountDownEnd = new UECountDownEnd();
-    public UENextLevel OnNextLevel = new UENextLevel();
+    public UEOnScoreChange ScoreUpdateEvent = new UEOnScoreChange();
+    public UECoinCollected CoinCollectedEvent = new UECoinCollected();
+    public UECountDownEnd CountDownEndEvent = new UECountDownEnd();
+    public UENextLevel NextLevelEvent = new UENextLevel();
 
     #endregion
     public int Score { get { return GameManager.Instance.Score; } }
@@ -43,7 +43,7 @@ public class UIManager : Singleton<UIManager>
         {
             _startButton.onClick.AddListener(OnStartGame); 
         }
-        OnCountDownEnd.AddListener(HandleCountDownEnd); 
+        CountDownEndEvent.AddListener(HandleCountDownEnd); 
     }
     public void PopScore(Vector3 position, int score)
     {

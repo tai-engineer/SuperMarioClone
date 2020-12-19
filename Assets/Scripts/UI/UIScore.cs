@@ -15,9 +15,9 @@ public class UIScore : MonoBehaviour
 
     void Start()
     {
-        UIManager.Instance.OnScoreChange.AddListener(OnScoreChange);
+        UIManager.Instance.ScoreUpdateEvent.AddListener(OnScoreUpdate);
     }
-    void OnScoreChange()
+    void OnScoreUpdate()
     {
         _scoreText.SetText(UIManager.Instance.Score.ToString("D6"));
     }
