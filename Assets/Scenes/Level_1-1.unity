@@ -5273,12 +5273,12 @@ PrefabInstance:
     - target: {fileID: 2006571550788453287, guid: 932f66cae1d4c1048a419b38f682f56b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.969
+      value: 12.36
       objectReference: {fileID: 0}
     - target: {fileID: 2006571550788453287, guid: 932f66cae1d4c1048a419b38f682f56b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.5
+      value: 6.215
       objectReference: {fileID: 0}
     - target: {fileID: 2006571550788453287, guid: 932f66cae1d4c1048a419b38f682f56b,
         type: 3}
@@ -5329,6 +5329,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2029390883256745476, guid: 932f66cae1d4c1048a419b38f682f56b,
+        type: 3}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2029390883256745476, guid: 932f66cae1d4c1048a419b38f682f56b,
+        type: 3}
+      propertyPath: m_GravityScale
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5255035932396209517, guid: 932f66cae1d4c1048a419b38f682f56b,
         type: 3}
@@ -5381,6 +5391,21 @@ PrefabInstance:
         type: 3}
       propertyPath: OnEnemyDead.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5255035932396209517, guid: 932f66cae1d4c1048a419b38f682f56b,
+        type: 3}
+      propertyPath: _layerToCheck.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 5255035932396209517, guid: 932f66cae1d4c1048a419b38f682f56b,
+        type: 3}
+      propertyPath: _debugDraw
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6622758042179676971, guid: 932f66cae1d4c1048a419b38f682f56b,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 0.95
       objectReference: {fileID: 0}
     - target: {fileID: 8648862265156655053, guid: 932f66cae1d4c1048a419b38f682f56b,
         type: 3}
@@ -11875,7 +11900,7 @@ PrefabInstance:
     - target: {fileID: 378173617590575804, guid: c30b11be5023bc54db974e15d4330858,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.4
+      value: 8.34
       objectReference: {fileID: 0}
     - target: {fileID: 378173617590575804, guid: c30b11be5023bc54db974e15d4330858,
         type: 3}
@@ -14034,7 +14059,7 @@ PrefabInstance:
     - target: {fileID: 1231404230953408202, guid: 894c93d09b6fecb49b48615b32fb5bbb,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.75
+      value: 12.49
       objectReference: {fileID: 0}
     - target: {fileID: 1231404230953408202, guid: 894c93d09b6fecb49b48615b32fb5bbb,
         type: 3}
@@ -14064,7 +14089,7 @@ PrefabInstance:
     - target: {fileID: 1231404232097856090, guid: 894c93d09b6fecb49b48615b32fb5bbb,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.75
+      value: 12.49
       objectReference: {fileID: 0}
     - target: {fileID: 1231404232097856090, guid: 894c93d09b6fecb49b48615b32fb5bbb,
         type: 3}
